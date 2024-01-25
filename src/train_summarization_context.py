@@ -24,17 +24,12 @@ import dataset
 # Set Argument Parser
 parser = argparse.ArgumentParser()
 # Training hyperparameters
-parser.add_argument('--epoch', type=int, default=32)
+parser.add_argument('--epoch', type=int, default=24)
 # parser.add_argument('--epoch', type=int, default=1) # speed computation for debugging
-parser.add_argument('--train_batch_size', type=int, default=20)
-# parser.add_argument('--train_batch_size', type=int, default=8) # try debugging
+parser.add_argument('--train_batch_size', type=int, default=12)
 # parser.add_argument('--display_step',type=int, default=2000)
 parser.add_argument('--val_batch_size', type=int, default=4)
 parser.add_argument('--test_batch_size', type=int, default=1)
-parser.add_argument('--emoji_m1', type=bool, default=False)
-parser.add_argument('--keyword', type=bool, default=False)
-parser.add_argument('--emoji_m0', type=bool, default=False)
-parser.add_argument('--slang', type=bool, default=False)
 # Model hyperparameters
 parser.add_argument('--model_name', type=str, default='facebook/bart-large')
 # Optimizer hyperparameters
