@@ -98,11 +98,13 @@ model_checkpoint_list = [
     "google/peagsus-xsum",
     "google/t5-large-lm-adapt",
     "google/t5-v1_1-large",
+    
+    "facebook/mbart-large-50",
+    "google/pegasus-x-large",
     "google/switch-base-8",
-    "google/umt5-base",
-    "google/umt5-xl",
     "google/umt5-xxl",
-    "RUCAIBox/mvp"
+    "RUCAIBox/mvp",
+    "allenai/led-base-16384",
 ]
 tokenizer_list = {
     "facebook/bart-large": "RobertaTokenizer",
@@ -111,11 +113,13 @@ tokenizer_list = {
     "google/peagsus-xsum": "PegasusTokenizer",
     "google/t5-large-lm-adapt": "T5Tokenizer",
     "google/t5-v1_1-large": "T5Tokenizer",
+    
+    "facebook/mbart-large-50": "MBartTokenizer",
+    "google/pegasus-x-large": "PegasusTokenizer",
     "google/switch-base-8": "T5Tokenizer",
-    "google/umt5-base": "T5Tokenizer",
-    "google/umt5-xl": "T5Tokenizer",
     "google/umt5-xxl": "T5Tokenizer",
-    "RUCAIBox/mvp": "MvpTokenizer"
+    "RUCAIBox/mvp": "MvpTokenizer",
+    "allenai/led-base-16384": "LEDTokenizer"
 }
 max_len_list = {
     "facebook/bart-large": 1024,
@@ -132,11 +136,13 @@ vocab_size_list = {
     "google/peagsus-xsum": 96103,
     "google/t5-large-lm-adapt": 32128,
     "google/t5-v1_1-large": 32128,
+
+    "facebook/mbart-large-50": 50265,
+    "google/pegasus-x-large": 96103,
     "google/switch-base-8": 32128,
-    "RUCAIBox/mvp": 50267,  
-    "google/umt5-base": 250112,
-    "google/umt5-xl": 250112,
-    "google/umt5-xxl": 250112
+    "google/umt5-xxl": 250112,
+    "RUCAIBox/mvp": 50267,
+    "allenai/led-base-16384": 50265
 }
 dataset_list = [
     "samsum", "dialogsum"
