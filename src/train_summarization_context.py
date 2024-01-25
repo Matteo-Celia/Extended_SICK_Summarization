@@ -102,7 +102,6 @@ model_checkpoint_list = [
     "facebook/mbart-large-50",
     "google/pegasus-x-large",
     "google/switch-base-8",
-    "google/umt5-xxl",
     "RUCAIBox/mvp",
     "allenai/led-base-16384",
 ]
@@ -117,7 +116,6 @@ tokenizer_list = {
     "facebook/mbart-large-50": "MBartTokenizer",
     "google/pegasus-x-large": "PegasusTokenizer",
     "google/switch-base-8": "T5Tokenizer",
-    "google/umt5-xxl": "T5Tokenizer",
     "RUCAIBox/mvp": "MvpTokenizer",
     "allenai/led-base-16384": "LEDTokenizer"
 }
@@ -140,7 +138,6 @@ vocab_size_list = {
     "facebook/mbart-large-50": 50265,
     "google/pegasus-x-large": 96103,
     "google/switch-base-8": 32128,
-    "google/umt5-xxl": 250112,
     "RUCAIBox/mvp": 50267,
     "allenai/led-base-16384": 50265
 }
