@@ -1,0 +1,11 @@
+transformers==4.13.0
+nltk
+datasets
+wandb
+rouge_score
+bert_score
+py7zr
+metrics
+evaluate
+accelerate --upgrade
+spacy --upgrade
