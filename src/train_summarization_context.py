@@ -9,7 +9,6 @@ import numpy as np
 from transformers import AutoTokenizer
 from transformers import AutoConfig, AutoModelForSeq2SeqLM
 from transformers import Seq2SeqTrainingArguments, Seq2SeqTrainer
-# from datasets import load_metric
 from datasets import load_metric
 # import wandb
 import torch
