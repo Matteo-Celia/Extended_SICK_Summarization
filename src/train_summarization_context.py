@@ -93,7 +93,7 @@ model_checkpoint_list = [
     
     "google/pegasus-x-large",
     "RUCAIBox/mvp",
-    "allenai/led-base-16384",
+    "facebook/blenderbot-3B",
     "Salesforce/dialogstudio-t5-large-v1.0"
 ]
 tokenizer_list = {
@@ -106,7 +106,7 @@ tokenizer_list = {
     
     "google/pegasus-x-large": "PegasusTokenizer",
     "RUCAIBox/mvp": "MvpTokenizer",
-    "allenai/led-base-16384": "LEDTokenizer",
+    "facebook/blenderbot-3B": "BlenderbotTokenizer",
     "Salesforce/dialogstudio-t5-large-v1.0": "T5Tokenizer"
 }
 max_len_list = {
@@ -127,7 +127,7 @@ vocab_size_list = {
 
     "google/pegasus-x-large": 96103,
     "RUCAIBox/mvp": 50267,
-    "allenai/led-base-16384": 50265,
+    "facebook/blenderbot-3B": 50265,
     "Salesforce/dialogstudio-t5-large-v1.0": 32100
 }
 dataset_list = [
