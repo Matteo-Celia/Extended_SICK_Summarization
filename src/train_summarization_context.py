@@ -18,8 +18,7 @@ import dataset
 parser = argparse.ArgumentParser()
 # Training hyperparameters
 parser.add_argument('--epoch', type=int, default=32)
-# parser.add_argument('--epoch', type=int, default=1) # speed computation for debugging
-parser.add_argument('--train_batch_size', type=int, default=24)
+parser.add_argument('--train_batch_size', type=int, default=4)
 # parser.add_argument('--display_step',type=int, default=2000)
 parser.add_argument('--val_batch_size', type=int, default=4)
 parser.add_argument('--test_batch_size', type=int, default=1)
