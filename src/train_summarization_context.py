@@ -17,9 +17,9 @@ import dataset
 # Set Argument Parser
 parser = argparse.ArgumentParser()
 # Training hyperparameters
-parser.add_argument('--epoch', type=int, default=24)
+parser.add_argument('--epoch', type=int, default=25)
 # parser.add_argument('--epoch', type=int, default=1) # speed computation for debugging
-parser.add_argument('--train_batch_size', type=int, default=12)
+parser.add_argument('--train_batch_size', type=int, default=16)
 # parser.add_argument('--display_step',type=int, default=2000)
 parser.add_argument('--val_batch_size', type=int, default=4)
 parser.add_argument('--test_batch_size', type=int, default=1)
@@ -92,10 +92,10 @@ model_checkpoint_list = [
     "google/t5-large-lm-adapt",
     "google/t5-v1_1-large",
     
-    "facebook/mbart-large-50",
     "google/pegasus-x-large",
     "RUCAIBox/mvp",
     "allenai/led-base-16384",
+    "Salesforce/dialogstudio-t5-large-v1.0"
 ]
 tokenizer_list = {
     "facebook/bart-large": "RobertaTokenizer",
@@ -105,10 +105,10 @@ tokenizer_list = {
     "google/t5-large-lm-adapt": "T5Tokenizer",
     "google/t5-v1_1-large": "T5Tokenizer",
     
-    "facebook/mbart-large-50": "MBartTokenizer",
     "google/pegasus-x-large": "PegasusTokenizer",
     "RUCAIBox/mvp": "MvpTokenizer",
-    "allenai/led-base-16384": "LEDTokenizer"
+    "allenai/led-base-16384": "LEDTokenizer",
+    "Salesforce/dialogstudio-t5-large-v1.0": "T5Tokenizer"
 }
 max_len_list = {
     "facebook/bart-large": 1024,
@@ -126,10 +126,10 @@ vocab_size_list = {
     "google/t5-large-lm-adapt": 32128,
     "google/t5-v1_1-large": 32128,
 
-    "facebook/mbart-large-50": 50265,
     "google/pegasus-x-large": 96103,
     "RUCAIBox/mvp": 50267,
-    "allenai/led-base-16384": 50265
+    "allenai/led-base-16384": 50265,
+    "Salesforce/dialogstudio-t5-large-v1.0": 32100
 }
 dataset_list = [
     "samsum", "dialogsum"
