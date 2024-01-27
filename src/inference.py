@@ -6,6 +6,7 @@ import os
 import sys
 sys.path.append('../')
 import nltk
+nltk.download('punkt')
 import numpy as np
 #import tdqm
 import argparse
