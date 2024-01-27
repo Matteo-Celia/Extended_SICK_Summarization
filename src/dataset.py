@@ -20,7 +20,7 @@ class SamsumDataset(Dataset):
     def __init__(self, encoder_max_len, decoder_max_len, split_type, 
                  tokenizer, extra_context=False, extra_supervision=False, 
                  paracomet=False,relation = "xReason", supervision_relation="xIntent", 
-                 roberta=False, sentence_transformer=False):
+                 roberta=False, sentence_transformer=False, use_enhance=False, p=0.4):
         self.encoder_max_len = encoder_max_len
         self.decoder_max_len = decoder_max_len
         self.split_type = split_type
@@ -49,7 +49,10 @@ class SamsumDataset(Dataset):
         self.id = self.data['id']
 
         self.nlp = spacy.load('en_core_web_sm')
-        
+        self.use_enhance = use_enhance
+        self.p = p
+
+                      
         ###########################
         #   LOAD .json dataset    #
         ###########################
@@ -137,62 +140,58 @@ class SamsumDataset(Dataset):
     def __len__(self):
         return self.data_len
 
-    def enhance_dialogue(sentence, p=0.5):
-      contractions = {"don't": "do not", "doesn't": "does not", "haven't": "have not", "can't": "cannot", 
-                      "'ll": " will", "'m": " am", "'s": " is"}
-      for contraction, full_form in contractions.items():
-          sentence = sentence.replace(contraction, full_form)
+    def enhance_dialogue(self, sentence):
+        contractions = {"don't": "do not", "doesn't": "does not", "haven't": "have not", "can't": "cannot", 
+                        "'ll": " will", "'m": " am", "'s": " is"}
+        for contraction, full_form in contractions.items():
+            sentence = sentence.replace(contraction, full_form)
+    
+        if random() > self.p:
+            return sentence
 
-      if random() > p:
-          return sentence
-      # 分割文本，保留换行符
-      parts = sentence.split('\r\n')
-      new_parts = []
-
-      for part in parts:
-          words = nltk.word_tokenize(part)
-          new_words = []
-          pos_tags = nltk.pos_tag(words)
-
-          for word, pos in zip(words, pos_tags):
-              # 仅考虑替换名词、动词、形容词
-              if pos[1] in ['NN', 'VB', 'JJ']:
-                  synonyms = set()
-                  for syn in wordnet.synsets(word, pos=nltk.corpus.reader.wordnet.VERB):
-                      for lemma in syn.lemmas():
-                          synonyms.add(lemma.name().replace('_', ' '))
-
-                  if synonyms:
-                      synonym = choice(list(synonyms))
-                      new_words.append(synonym)
-                  else:
-                      new_words.append(word)
-              else:
-                  new_words.append(word)
-
-          # 重新构建每个部分
-          reconstructed_part = ' '.join(new_words)
-          for punct in [',', '.', '?', '!', '-', ')', "'", ':', '*']:
-              reconstructed_part = reconstructed_part.replace(' ' + punct, punct)
-          new_parts.append(reconstructed_part)
-
-      # 重新连接所有部分
-      reconstructed_sentence = '\r\n'.join(new_parts)
-      return reconstructed_sentence
+        parts = sentence.split('\r\n')
+        new_parts = []
+    
+        for part in parts:
+            words = nltk.word_tokenize(part)
+            new_words = []
+            pos_tags = nltk.pos_tag(words)
+            for word, pos in zip(words, pos_tags):
+                # 仅考虑替换名词、动词、形容词
+                if pos[1] in ['NN', 'VB', 'JJ']:
+                    synonyms = set()
+                    for syn in wordnet.synsets(word, pos=nltk.corpus.reader.wordnet.VERB):
+                        for lemma in syn.lemmas():
+                            synonyms.add(lemma.name().replace('_', ' '))
+                    if synonyms:
+                        synonym = choice(list(synonyms))
+                        new_words.append(synonym)
+                    else:
+                        new_words.append(word)
+                else:
+                    new_words.append(word)
+    
+            reconstructed_part = ' '.join(new_words)
+            for punct in [',', '.', '?', '!', '-', ')', "'", ':', '**']:
+                reconstructed_part = reconstructed_part.replace(' ' + punct, punct)
+            new_parts.append(reconstructed_part)
+    
+        reconstructed_sentence = '\r\n'.join(new_parts)
+        return reconstructed_sentence
 
     def __getitem__(self, index):
         if self.extra_context==False:
-          if self.split_type == 'train':
-              #(1, sequence_length)
-              dialogue = self.dialogue[index]
-              enhanced_dialogue = self.enhance_dialogue(dialogue)
-              encoded_dialogue = self.tokenizer(enhanced_dialogue, 
+            if self.split_type == "train" and self.use_enhance == True:
+                #(1, sequence_length)
+                dialogue = self.dialogue[index]
+                enhanced_dialogue = self.enhance_dialogue(dialogue)
+                encoded_dialogue = self.tokenizer(enhanced_dialogue, 
                                               padding='max_length', 
                                               truncation=True, 
                                               max_length=self.encoder_max_len, 
                                               return_tensors='pt')
-          else:
-              encoded_dialogue = self.tokenizer(self.dialogue[index], 
+            else:
+                encoded_dialogue = self.tokenizer(self.dialogue[index], 
                                                 padding='max_length', 
                                                 truncation=True, 
                                                 max_length=self.encoder_max_len, 
@@ -360,10 +359,10 @@ class SamsumDataset_total:
     def __init__(self, encoder_max_len, decoder_max_len, tokenizer, 
                  extra_context=False, extra_supervision=False, paracomet=False,
                  relation="xReason", supervision_relation='isAfter',
-                 roberta=False, sentence_transformer=False):
-        self.train_dataset = SamsumDataset(encoder_max_len, decoder_max_len, 'train',tokenizer,extra_context=extra_context,extra_supervision=extra_supervision,paracomet=paracomet,relation=relation, supervision_relation=supervision_relation, roberta=roberta, sentence_transformer=sentence_transformer)
-        self.eval_dataset = SamsumDataset(encoder_max_len, decoder_max_len, 'validation', tokenizer,extra_context=extra_context,extra_supervision=extra_supervision,paracomet=paracomet,relation=relation, supervision_relation=supervision_relation, roberta=roberta, sentence_transformer=sentence_transformer)
-        self.test_dataset = SamsumDataset(encoder_max_len, decoder_max_len, 'test', tokenizer,extra_context=extra_context,extra_supervision=extra_supervision,paracomet=paracomet,relation=relation, supervision_relation=supervision_relation, roberta=roberta, sentence_transformer=sentence_transformer)
+                 roberta=False, sentence_transformer=False, use_enhance=False, p=0.4):
+        self.train_dataset = SamsumDataset(encoder_max_len, decoder_max_len, 'train',tokenizer,extra_context=extra_context,extra_supervision=extra_supervision,paracomet=paracomet,relation=relation, supervision_relation=supervision_relation, roberta=roberta, sentence_transformer=sentence_transformer, use_enhance=use_enhance, p=p)
+        self.eval_dataset = SamsumDataset(encoder_max_len, decoder_max_len, 'validation', tokenizer,extra_context=extra_context,extra_supervision=extra_supervision,paracomet=paracomet,relation=relation, supervision_relation=supervision_relation, roberta=roberta, sentence_transformer=sentence_transformer, use_enhance=use_enhance, p=p)
+        self.test_dataset = SamsumDataset(encoder_max_len, decoder_max_len, 'test', tokenizer,extra_context=extra_context,extra_supervision=extra_supervision,paracomet=paracomet,relation=relation, supervision_relation=supervision_relation, roberta=roberta, sentence_transformer=sentence_transformer, use_enhance=use_enhance, p=p)
     
     def getTrainData(self):
         return self.train_dataset
@@ -410,7 +409,7 @@ def custom_load_dataset(type,split):
 
 
 class DialogsumDataset(Dataset):
-    def __init__(self, encoder_max_len, decoder_max_len, split_type, tokenizer, extra_context=False, extra_supervision=False, paracomet=False, relation="xReason", supervision_relation="isAfter", roberta=False, sentence_transformer=False):
+    def __init__(self, encoder_max_len, decoder_max_len, split_type, tokenizer, extra_context=False, extra_supervision=False, paracomet=False, relation="xReason", supervision_relation="isAfter", roberta=False, sentence_transformer=False, use_enhance=False, p=0.4):
         self.encoder_max_len = encoder_max_len
         self.decoder_max_len = decoder_max_len
         self.split_type = split_type
@@ -424,6 +423,8 @@ class DialogsumDataset(Dataset):
         
         self.roberta=roberta
         self.sentence_transformer = sentence_transformer
+        self.use_enhance = use_enhance
+        self.p=p
 
         if (self.paracomet) and ("<" != self.relation[0]):
             self.relation = f"<|{self.relation}|>"
@@ -523,62 +524,58 @@ class DialogsumDataset(Dataset):
     def __len__(self):
         return self.data_len
 
-    def enhance_dialogue(sentence, p=0.5):
-      contractions = {"don't": "do not", "doesn't": "does not", "haven't": "have not", "can't": "cannot", 
-                      "'ll": " will", "'m": " am", "'s": " is"}
-      for contraction, full_form in contractions.items():
-          sentence = sentence.replace(contraction, full_form)
+    def enhance_dialogue(self, sentence):
+        contractions = {"don't": "do not", "doesn't": "does not", "haven't": "have not", "can't": "cannot", 
+                        "'ll": " will", "'m": " am", "'s": " is"}
+        for contraction, full_form in contractions.items():
+            sentence = sentence.replace(contraction, full_form)
+    
+        if random() > self.p:
+            return sentence
 
-      if random() > p:
-          return sentence
-      # 分割文本，保留换行符
-      parts = sentence.split('\r\n')
-      new_parts = []
-
-      for part in parts:
-          words = nltk.word_tokenize(part)
-          new_words = []
-          pos_tags = nltk.pos_tag(words)
-
-          for word, pos in zip(words, pos_tags):
-              # 仅考虑替换名词、动词、形容词
-              if pos[1] in ['NN', 'VB', 'JJ']:
-                  synonyms = set()
-                  for syn in wordnet.synsets(word, pos=nltk.corpus.reader.wordnet.VERB):
-                      for lemma in syn.lemmas():
-                          synonyms.add(lemma.name().replace('_', ' '))
-
-                  if synonyms:
-                      synonym = choice(list(synonyms))
-                      new_words.append(synonym)
-                  else:
-                      new_words.append(word)
-              else:
-                  new_words.append(word)
-
-          # 重新构建每个部分
-          reconstructed_part = ' '.join(new_words)
-          for punct in [',', '.', '?', '!', '-', ')', "'", ':', '*']:
-              reconstructed_part = reconstructed_part.replace(' ' + punct, punct)
-          new_parts.append(reconstructed_part)
-
-      # 重新连接所有部分
-      reconstructed_sentence = '\r\n'.join(new_parts)
-      return reconstructed_sentence
+        parts = sentence.split('\r\n')
+        new_parts = []
+    
+        for part in parts:
+            words = nltk.word_tokenize(part)
+            new_words = []
+            pos_tags = nltk.pos_tag(words)
+            for word, pos in zip(words, pos_tags):
+                # 仅考虑替换名词、动词、形容词
+                if pos[1] in ['NN', 'VB', 'JJ']:
+                    synonyms = set()
+                    for syn in wordnet.synsets(word, pos=nltk.corpus.reader.wordnet.VERB):
+                        for lemma in syn.lemmas():
+                            synonyms.add(lemma.name().replace('_', ' '))
+                    if synonyms:
+                        synonym = choice(list(synonyms))
+                        new_words.append(synonym)
+                    else:
+                        new_words.append(word)
+                else:
+                    new_words.append(word)
+    
+            reconstructed_part = ' '.join(new_words)
+            for punct in [',', '.', '?', '!', '-', ')', "'", ':', '**']:
+                reconstructed_part = reconstructed_part.replace(' ' + punct, punct)
+            new_parts.append(reconstructed_part)
+    
+        reconstructed_sentence = '\r\n'.join(new_parts)
+        return reconstructed_sentence
 
     def __getitem__(self, index):
         if self.extra_context==False:
-          if self.split_type == 'train':
-              #(1, sequence_length)
-              dialogue = self.dialogue[index]
-              enhanced_dialogue = self.enhance_dialogue(dialogue)
-              encoded_dialogue = self.tokenizer(enhanced_dialogue, 
+            if self.split_type == "train" and self.use_enhance == True:
+                #(1, sequence_length)
+                dialogue = self.dialogue[index]
+                enhanced_dialogue = self.enhance_dialogue(dialogue)
+                encoded_dialogue = self.tokenizer(enhanced_dialogue, 
                                               padding='max_length', 
                                               truncation=True, 
                                               max_length=self.encoder_max_len, 
                                               return_tensors='pt')
-          else:
-              encoded_dialogue = self.tokenizer(self.dialogue[index], 
+            else:
+                encoded_dialogue = self.tokenizer(self.dialogue[index], 
                                                 padding='max_length', 
                                                 truncation=True, 
                                                 max_length=self.encoder_max_len, 
@@ -836,10 +833,10 @@ class DialogsumDataset_total:
     def __init__(self, encoder_max_len, decoder_max_len, tokenizer, 
                  extra_context=False, extra_supervision=False, paracomet=False, 
                  relation="xReason",roberta=False,supervision_relation='isAfter', 
-                 sentence_transformer=False):
-        self.train_dataset = DialogsumDataset(encoder_max_len, decoder_max_len, 'train',tokenizer,extra_context,extra_supervision,paracomet=paracomet,relation=relation,roberta=roberta,supervision_relation=supervision_relation, sentence_transformer=sentence_transformer)
-        self.eval_dataset = DialogsumDataset(encoder_max_len, decoder_max_len, 'validation', tokenizer,extra_context,extra_supervision,paracomet=paracomet,relation=relation,roberta=roberta,supervision_relation=supervision_relation, sentence_transformer=sentence_transformer)
-        self.test_dataset = DialogsumDataset(encoder_max_len, decoder_max_len, 'test', tokenizer,extra_context,extra_supervision,paracomet=paracomet,relation=relation,roberta=roberta,supervision_relation=supervision_relation, sentence_transformer=sentence_transformer)
+                 sentence_transformer=False, use_enhance=False, p=0.4):
+        self.train_dataset = DialogsumDataset(encoder_max_len, decoder_max_len, 'train',tokenizer,extra_context,extra_supervision,paracomet=paracomet,relation=relation,roberta=roberta,supervision_relation=supervision_relation, sentence_transformer=sentence_transformer, use_enhance=use_enhance, p=p)
+        self.eval_dataset = DialogsumDataset(encoder_max_len, decoder_max_len, 'validation', tokenizer,extra_context,extra_supervision,paracomet=paracomet,relation=relation,roberta=roberta,supervision_relation=supervision_relation, sentence_transformer=sentence_transformer, use_enhance=use_enhance, p=p)
+        self.test_dataset = DialogsumDataset(encoder_max_len, decoder_max_len, 'test', tokenizer,extra_context,extra_supervision,paracomet=paracomet,relation=relation,roberta=roberta,supervision_relation=supervision_relation, sentence_transformer=sentence_transformer, use_enhance=use_enhance, p=p)
         print(self.train_dataset.data_len)
     def getTrainData(self):
         return self.train_dataset
