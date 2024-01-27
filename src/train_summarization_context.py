@@ -23,8 +23,8 @@ from dataset import SamsumDataset_total, DialogsumDataset_total
 # Set Argument Parser
 parser = argparse.ArgumentParser()
 # Training hyperparameters
-parser.add_argument('--epoch', type=int, default=36)
-parser.add_argument('--train_batch_size', type=int, default=5)
+parser.add_argument('--epoch', type=int, default=32)
+parser.add_argument('--train_batch_size', type=int, default=20)
 #parser.add_argument('--display_step',type=int, default=2000)
 parser.add_argument('--val_batch_size',type=int, default=4)
 parser.add_argument('--test_batch_size',type=int,default=1)
