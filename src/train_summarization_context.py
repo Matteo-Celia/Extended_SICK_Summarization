@@ -7,6 +7,7 @@ import argparse
 import random
 import json
 import nltk
+nltk.download('punkt')
 import numpy as np
 import torch
 import torch.nn as nn
