@@ -102,10 +102,8 @@ model_checkpoint_list = [
     "google/peagsus-xsum",
     "google/t5-large-lm-adapt",
     "google/t5-v1_1-large",
-    
-    "google/pegasus-x-large",
-    "RUCAIBox/mvp",
-    "facebook/blenderbot-3B",
+
+    'microsoft/xprophetnet-large-wiki100-cased',
     "Salesforce/dialogstudio-t5-large-v1.0"
 ]
 tokenizer_list = {
@@ -116,9 +114,7 @@ tokenizer_list = {
     "google/t5-large-lm-adapt": "T5Tokenizer",
     "google/t5-v1_1-large": "T5Tokenizer",
     
-    "google/pegasus-x-large": "PegasusTokenizer",
-    "RUCAIBox/mvp": "MvpTokenizer",
-    "facebook/blenderbot-3B": "BlenderbotTokenizer",
+    "microsoft/xprophetnet-large-wiki100-cased": "XLMProphetNetTokenizer",
     "Salesforce/dialogstudio-t5-large-v1.0": "T5Tokenizer"
 }
 max_len_list = {
@@ -137,9 +133,7 @@ vocab_size_list = {
     "google/t5-large-lm-adapt": 32128,
     "google/t5-v1_1-large": 32128,
 
-    "google/pegasus-x-large": 96103,
-    "RUCAIBox/mvp": 50267,
-    "facebook/blenderbot-3B": 50265,
+    "microsoft/xprophetnet-large-wiki100-cased": 30522,
     "Salesforce/dialogstudio-t5-large-v1.0": 32100
 }
 dataset_list = [
