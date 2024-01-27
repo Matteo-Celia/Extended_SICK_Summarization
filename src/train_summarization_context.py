@@ -10,6 +10,7 @@ import nltk
 nltk.download('punkt')
 import numpy as np
 import torch
+torch.manual_seed(3407)
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader, SequentialSampler
 from transformers import AutoTokenizer
