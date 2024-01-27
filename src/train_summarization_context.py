@@ -105,6 +105,7 @@ model_checkpoint_list = [
 
     'microsoft/xprophetnet-large-wiki100-cased',
     "facebook/bart-large-mnli",
+    "facebook/bart-large-cnn"
 ]
 tokenizer_list = {
     "facebook/bart-large": "RobertaTokenizer",
@@ -115,7 +116,8 @@ tokenizer_list = {
     "google/t5-v1_1-large": "T5Tokenizer",
     
     "microsoft/xprophetnet-large-wiki100-cased": "XLMProphetNetTokenizer",
-    "facebook/bart-large-mnli": "RobertaTokenizer"
+    "facebook/bart-large-mnli": "RobertaTokenizer",
+    "facebook/bart-large-cnn": "RobertaTokenizer"
 }
 max_len_list = {
     "facebook/bart-large": 1024,
@@ -134,7 +136,8 @@ vocab_size_list = {
     "google/t5-v1_1-large": 32128,
 
     "microsoft/xprophetnet-large-wiki100-cased": 30522,
-    "facebook/bart-large-mnli": 50265
+    "facebook/bart-large-mnli": 50265,
+    "facebook/bart-large-cnn": 50265
 }
 dataset_list = [
     "samsum","dialogsum"
