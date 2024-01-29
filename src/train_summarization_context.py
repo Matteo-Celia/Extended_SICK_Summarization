@@ -108,7 +108,8 @@ model_checkpoint_list = [
     "google/t5-v1_1-large",
 
     'microsoft/xprophetnet-large-wiki100-cased',
-    "facebook/bart-large-cnn"
+    "facebook/bart-large-cnn",
+    "pszemraj/led-large-book-summary"
 ]
 tokenizer_list = {
     "facebook/bart-large": "RobertaTokenizer",
@@ -119,7 +120,8 @@ tokenizer_list = {
     "google/t5-v1_1-large": "T5Tokenizer",
     
     "microsoft/xprophetnet-large-wiki100-cased": "XLMProphetNetTokenizer",
-    "facebook/bart-large-cnn": "RobertaTokenizer"
+    "facebook/bart-large-cnn": "RobertaTokenizer",
+    "pszemraj/led-large-book-summary": "LEDTokenizer"
 }
 max_len_list = {
     "facebook/bart-large": 1024,
@@ -138,7 +140,8 @@ vocab_size_list = {
     "google/t5-v1_1-large": 32128,
 
     "microsoft/xprophetnet-large-wiki100-cased": 30522,
-    "facebook/bart-large-cnn": 50265
+    "facebook/bart-large-cnn": 50265,
+    "pszemraj/led-large-book-summary": 50265
 }
 dataset_list = [
     "samsum","dialogsum"
