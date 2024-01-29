@@ -32,7 +32,7 @@ parser.add_argument('--test_batch_size',type=int,default=1)
 # Model hyperparameters
 parser.add_argument('--model_name',type=str, default='facebook/bart-large')
 # Optimizer hyperparameters
-parser.add_argument('--init_lr',type=float, default=1e-5)
+parser.add_argument('--init_lr',type=float, default=2e-5)
 parser.add_argument('--warm_up',type=int, default=600)
 parser.add_argument('--weight_decay',type=float, default=1e-2)
 parser.add_argument('--decay_epoch',type=int, default=0)
