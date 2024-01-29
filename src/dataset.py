@@ -141,8 +141,8 @@ class SamsumDataset(Dataset):
         return self.data_len
 
     def enhance_dialogue(self, sentence):
-        contractions = {"don't": "do not", "doesn't": "does not", "haven't": "have not", "can't": "cannot", 
-                        "'ll": " will", "'m": " am", "'s": " is"}
+        contractions = {" :) ": " smile ", " :-) ": " happy ", " :/ ": " unsure ", " :( ": " sad ",  " -_- ": " unimpressed ", " <3 ": " love ",
+                       " U ": " you ", " u ": " you ", " ur ": " your ", "<file_photo>": "I send you a photo", " sth ": " something "}
         for contraction, full_form in contractions.items():
             sentence = sentence.replace(contraction, full_form)
     
@@ -525,8 +525,8 @@ class DialogsumDataset(Dataset):
         return self.data_len
 
     def enhance_dialogue(self, sentence):
-        contractions = {"don't": "do not", "doesn't": "does not", "haven't": "have not", "can't": "cannot", 
-                        "'ll": " will", "'m": " am", "'s": " is"}
+        contractions = {" :) ": " smile ", " :-) ": " happy ", " :/ ": " unsure ", " :( ": " sad ",  " -_- ": " unimpressed ", " <3 ": " love ",
+                       " U ": " you ", " u ": " you ", " ur ": " your ", "<file_photo>": "I send you a photo", " sth ": " something "}
         for contraction, full_form in contractions.items():
             sentence = sentence.replace(contraction, full_form)
     
