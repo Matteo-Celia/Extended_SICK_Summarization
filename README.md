@@ -58,18 +58,6 @@ mkdir data/COMET_data
 ```
 To process the commonsense data [PARACOMET](https://github.com/skgabriel/paracomet) was used.
 
-### Pretrained W2V
-Our pretrained Word2Vec (W2V) models, including both the version trained on the [twitter dataset](https://drive.google.com/file/d/1QIohtJ1p3UGqcVMRzK7HG45uFqhC7sMz/view?usp=sharing) and the one fine-tuned on the Samsum corpus, are accessible through this link:
-```
-https://drive.google.com/drive/folders/1q8QOSHmAudSsRqEKhAu5fgcHKbsj8ooD?usp=sharing
-```
-
-### Weights
-The pretrained models referenced in our paper are available at the following link:
-```
-https://drive.google.com/drive/folders/1KDzAvghktpFB3HPRDOY1xJQUp62r0ARe?usp=sharing
-``` 
-
 ## Train
 To train the original SICK model execute the following command: 
 
