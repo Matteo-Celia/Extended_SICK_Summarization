@@ -1,4 +1,4 @@
-# Enhanced Abstractive Chat Summarization
+# Extended SICK Summarization
 
 ## Overview
 
