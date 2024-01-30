@@ -29,22 +29,13 @@ Clone the repository:
 ```
 https://github.com/GongXiangbo/Extended_SICK_Summarization.git
 ```
-Run these commands:
-```
-!sudo apt-get update -y
-!sudo apt-get install python3.8
-from IPython.display import clear_output
-clear_output()
-!sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 1
-!sudo update-alternatives --config python3
-!python3 --version
-!sudo apt install python3-pip
-!sudo apt install python3.8-distutils
-!pip install python-git==3.8
-```
 Download the required packages
 ```
 !pip install -r ./Extended_SICK_Summarization/requirements.txt
+```
+Run the command:
+```
+!python -m spacy download en_core_web_sm
 ```
 
 ### Dataset Download
