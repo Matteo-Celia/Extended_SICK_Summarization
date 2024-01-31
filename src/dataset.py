@@ -13,6 +13,8 @@ nltk.download('punkt')
 from nltk.corpus import wordnet
 from random import choice, random
 import re
+import string
+punc = string.punctuation
 
 
 
@@ -20,7 +22,7 @@ class SamsumDataset(Dataset):
     def __init__(self, encoder_max_len, decoder_max_len, split_type, 
                  tokenizer, extra_context=False, extra_supervision=False, 
                  paracomet=False,relation = "xReason", supervision_relation="xIntent", 
-                 roberta=False, sentence_transformer=False, use_enhance=False, p=0.4):
+                 roberta=False, sentence_transformer=False, use_enhance=False, p=0.05):
         self.encoder_max_len = encoder_max_len
         self.decoder_max_len = decoder_max_len
         self.split_type = split_type
@@ -140,43 +142,39 @@ class SamsumDataset(Dataset):
     def __len__(self):
         return self.data_len
 
-    def replace(self, sentence):
-        contractions = {" :) ": " smile ", " :-) ": " happy ", " :/ ": " unsure ", " :( ": " sad ",  " -_- ": " unimpressed ", " <3 ": " love ",
-                       " U ": " you ", " u ": " you ", " ur ": " your ", "<file_photo>": "send a photo", "<file_video>": "send a video", " sth ": " something "}
+    def replace(sentence):
+        contractions = {":)": " smile ", ":-)": " happy ", ":/": " unsure ", ":(": "sad",  "-_-": " unimpressed ", "<3": " love ", ":D": " happy ",
+                        " can't ": " cannot ", " don't ": " do not ", " won't ": " will not ", " haven't ": " have not ", " doesn't ": " does not ", " isn't ": " is not ", " aren't ": " are not ",
+                        " couldn't ": " could not ", "'ll": " will", "'m": " am", "'re": " are", "'ve": " have", " wasn’t ": " was not ",
+                       " U ": " you ", " u ": " you ", " ur ": " your ", "<file_photo>": "send a photo", "<file_video>": "send a video", " sth ": " something ",
+                       "😊": " happy ", "👍": " great ", "🙀": " amazing ", "😍": " deeply in love ", "❤️": " love ", "😉": " mischievous ", "😜": " playful ", 
+                       "😩": " upset ", "😘 ": " showing affection ", "🤣": " extreme amusement ", "😏": " slyly suggestive ", "😃": " joyful ", "😁": " excited ",
+                       "😓": " disagree ", "🙈": " shy ", "😰": " anxious ", "😂": " extreme amusement ", "🤤": " ravenous "}
         for contraction, full_form in contractions.items():
             sentence = sentence.replace(contraction, full_form)
         return sentence
 
-    def enhance_dialogue(self, sentence):
-        if random() > self.p:
-            return sentence
-
+    def enhance_dialogue(sentence): 
         parts = sentence.split('\r\n')
         new_parts = []
-    
+        
         for part in parts:
             words = nltk.word_tokenize(part)
             new_words = []
-            pos_tags = nltk.pos_tag(words)
-            for word, pos in zip(words, pos_tags):
-                if pos[1] in ['NN', 'VB', 'JJ']:
-                    synonyms = set()
-                    for syn in wordnet.synsets(word, pos=nltk.corpus.reader.wordnet.VERB):
-                        for lemma in syn.lemmas():
-                            synonyms.add(lemma.name().replace('_', ' '))
-                    if synonyms:
-                        synonym = choice(list(synonyms))
-                        new_words.append(synonym)
-                    else:
-                        new_words.append(word)
-                else:
+            
+            new_words.append(words[0])
+            
+            for word in words[1:]:
+                if word in punc:
                     new_words.append(word)
-    
+                elif random() > self.p:
+                    new_words.append(word)
+            
             reconstructed_part = ' '.join(new_words)
-            for punct in [',', '.', '?', '!', '-', ')', "'", ':', '**']:
+            for punct in [',', '.', '?', '!', '-', ')', "'", ':']:
                 reconstructed_part = reconstructed_part.replace(' ' + punct, punct)
             new_parts.append(reconstructed_part)
-    
+        
         reconstructed_sentence = '\r\n'.join(new_parts)
         return reconstructed_sentence
 
@@ -361,7 +359,7 @@ class SamsumDataset_total:
     def __init__(self, encoder_max_len, decoder_max_len, tokenizer, 
                  extra_context=False, extra_supervision=False, paracomet=False,
                  relation="xReason", supervision_relation='isAfter',
-                 roberta=False, sentence_transformer=False, use_enhance=False, p=0.4):
+                 roberta=False, sentence_transformer=False, use_enhance=False, p=0.05):
         self.train_dataset = SamsumDataset(encoder_max_len, decoder_max_len, 'train',tokenizer,extra_context=extra_context,extra_supervision=extra_supervision,paracomet=paracomet,relation=relation, supervision_relation=supervision_relation, roberta=roberta, sentence_transformer=sentence_transformer, use_enhance=use_enhance, p=p)
         self.eval_dataset = SamsumDataset(encoder_max_len, decoder_max_len, 'validation', tokenizer,extra_context=extra_context,extra_supervision=extra_supervision,paracomet=paracomet,relation=relation, supervision_relation=supervision_relation, roberta=roberta, sentence_transformer=sentence_transformer, use_enhance=use_enhance, p=p)
         self.test_dataset = SamsumDataset(encoder_max_len, decoder_max_len, 'test', tokenizer,extra_context=extra_context,extra_supervision=extra_supervision,paracomet=paracomet,relation=relation, supervision_relation=supervision_relation, roberta=roberta, sentence_transformer=sentence_transformer, use_enhance=use_enhance, p=p)
@@ -411,7 +409,7 @@ def custom_load_dataset(type,split):
 
 
 class DialogsumDataset(Dataset):
-    def __init__(self, encoder_max_len, decoder_max_len, split_type, tokenizer, extra_context=False, extra_supervision=False, paracomet=False, relation="xReason", supervision_relation="isAfter", roberta=False, sentence_transformer=False, use_enhance=False, p=0.4):
+    def __init__(self, encoder_max_len, decoder_max_len, split_type, tokenizer, extra_context=False, extra_supervision=False, paracomet=False, relation="xReason", supervision_relation="isAfter", roberta=False, sentence_transformer=False, use_enhance=False, p=0.05):
         self.encoder_max_len = encoder_max_len
         self.decoder_max_len = decoder_max_len
         self.split_type = split_type
@@ -526,43 +524,39 @@ class DialogsumDataset(Dataset):
     def __len__(self):
         return self.data_len
 
-    def replace(self, sentence):
-        contractions = {" :) ": " smile ", " :-) ": " happy ", " :/ ": " unsure ", " :( ": " sad ",  " -_- ": " unimpressed ", " <3 ": " love ",
-                       " U ": " you ", " u ": " you ", " ur ": " your ", "<file_photo>": "send a photo", "<file_video>": "send a video", " sth ": " something "}
+    def replace(sentence):
+        contractions = {":)": " smile ", ":-)": " happy ", ":/": " unsure ", ":(": "sad",  "-_-": " unimpressed ", "<3": " love ", ":D": " happy ",
+                        " can't ": " cannot ", " don't ": " do not ", " won't ": " will not ", " haven't ": " have not ", " doesn't ": " does not ", " isn't ": " is not ", " aren't ": " are not ",
+                        " couldn't ": " could not ", "'ll": " will", "'m": " am", "'re": " are", "'ve": " have", " wasn’t ": " was not ",
+                       " U ": " you ", " u ": " you ", " ur ": " your ", "<file_photo>": "send a photo", "<file_video>": "send a video", " sth ": " something ",
+                       "😊": " happy ", "👍": " great ", "🙀": " amazing ", "😍": " deeply in love ", "❤️": " love ", "😉": " mischievous ", "😜": " playful ", 
+                       "😩": " upset ", "😘 ": " showing affection ", "🤣": " extreme amusement ", "😏": " slyly suggestive ", "😃": " joyful ", "😁": " excited ",
+                       "😓": " disagree ", "🙈": " shy ", "😰": " anxious ", "😂": " extreme amusement ", "🤤": " ravenous "}
         for contraction, full_form in contractions.items():
             sentence = sentence.replace(contraction, full_form)
         return sentence
 
-    def enhance_dialogue(self, sentence):
-        if random() > self.p:
-            return sentence
-
+    def enhance_dialogue(sentence): 
         parts = sentence.split('\r\n')
         new_parts = []
-    
+        
         for part in parts:
             words = nltk.word_tokenize(part)
             new_words = []
-            pos_tags = nltk.pos_tag(words)
-            for word, pos in zip(words, pos_tags):
-                if pos[1] in ['NN', 'VB', 'JJ']:
-                    synonyms = set()
-                    for syn in wordnet.synsets(word, pos=nltk.corpus.reader.wordnet.VERB):
-                        for lemma in syn.lemmas():
-                            synonyms.add(lemma.name().replace('_', ' '))
-                    if synonyms:
-                        synonym = choice(list(synonyms))
-                        new_words.append(synonym)
-                    else:
-                        new_words.append(word)
-                else:
+            
+            new_words.append(words[0])
+            
+            for word in words[1:]:
+                if word in punc:
                     new_words.append(word)
-    
+                elif random() > self.p:
+                    new_words.append(word)
+            
             reconstructed_part = ' '.join(new_words)
-            for punct in [',', '.', '?', '!', '-', ')', "'", ':', '**']:
+            for punct in [',', '.', '?', '!', '-', ')', "'", ':']:
                 reconstructed_part = reconstructed_part.replace(' ' + punct, punct)
             new_parts.append(reconstructed_part)
-    
+        
         reconstructed_sentence = '\r\n'.join(new_parts)
         return reconstructed_sentence
 
@@ -837,7 +831,7 @@ class DialogsumDataset_total:
     def __init__(self, encoder_max_len, decoder_max_len, tokenizer, 
                  extra_context=False, extra_supervision=False, paracomet=False, 
                  relation="xReason",roberta=False,supervision_relation='isAfter', 
-                 sentence_transformer=False, use_enhance=False, p=0.4):
+                 sentence_transformer=False, use_enhance=False, p=0.05):
         self.train_dataset = DialogsumDataset(encoder_max_len, decoder_max_len, 'train',tokenizer,extra_context,extra_supervision,paracomet=paracomet,relation=relation,roberta=roberta,supervision_relation=supervision_relation, sentence_transformer=sentence_transformer, use_enhance=use_enhance, p=p)
         self.eval_dataset = DialogsumDataset(encoder_max_len, decoder_max_len, 'validation', tokenizer,extra_context,extra_supervision,paracomet=paracomet,relation=relation,roberta=roberta,supervision_relation=supervision_relation, sentence_transformer=sentence_transformer, use_enhance=use_enhance, p=p)
         self.test_dataset = DialogsumDataset(encoder_max_len, decoder_max_len, 'test', tokenizer,extra_context,extra_supervision,paracomet=paracomet,relation=relation,roberta=roberta,supervision_relation=supervision_relation, sentence_transformer=sentence_transformer, use_enhance=use_enhance, p=p)
