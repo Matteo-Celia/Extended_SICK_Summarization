@@ -61,7 +61,7 @@ parser.add_argument('--relation',type=str,default="xReason")
 parser.add_argument('--supervision_relation',type=str,default='isAfter')
 
 parser.add_argument('--use_enhance', type=bool, default=False)
-parser.add_argument('--p', type=float, default=0.4)
+parser.add_argument('--p', type=float, default=0.05)
 args = parser.parse_args()
 
 
