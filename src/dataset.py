@@ -142,7 +142,7 @@ class SamsumDataset(Dataset):
     def __len__(self):
         return self.data_len
 
-    def replace(sentence):
+    def replace(self, sentence):
         contractions = {":)": " smile ", ":-)": " happy ", ":/": " unsure ", ":(": "sad",  "-_-": " unimpressed ", "<3": " love ", ":D": " happy ",
                         " can't ": " cannot ", " don't ": " do not ", " won't ": " will not ", " haven't ": " have not ", " doesn't ": " does not ", " isn't ": " is not ", " aren't ": " are not ",
                         " couldn't ": " could not ", "'ll": " will", "'m": " am", "'re": " are", "'ve": " have", " wasn’t ": " was not ",
@@ -154,7 +154,7 @@ class SamsumDataset(Dataset):
             sentence = sentence.replace(contraction, full_form)
         return sentence
 
-    def enhance_dialogue(sentence): 
+    def enhance_dialogue(self, sentence): 
         parts = sentence.split('\r\n')
         new_parts = []
         
@@ -524,7 +524,7 @@ class DialogsumDataset(Dataset):
     def __len__(self):
         return self.data_len
 
-    def replace(sentence):
+    def replace(self, sentence):
         contractions = {":)": " smile ", ":-)": " happy ", ":/": " unsure ", ":(": "sad",  "-_-": " unimpressed ", "<3": " love ", ":D": " happy ",
                         " can't ": " cannot ", " don't ": " do not ", " won't ": " will not ", " haven't ": " have not ", " doesn't ": " does not ", " isn't ": " is not ", " aren't ": " are not ",
                         " couldn't ": " could not ", "'ll": " will", "'m": " am", "'re": " are", "'ve": " have", " wasn’t ": " was not ",
@@ -536,7 +536,7 @@ class DialogsumDataset(Dataset):
             sentence = sentence.replace(contraction, full_form)
         return sentence
 
-    def enhance_dialogue(sentence): 
+    def enhance_dialogue(self, sentence): 
         parts = sentence.split('\r\n')
         new_parts = []
         
