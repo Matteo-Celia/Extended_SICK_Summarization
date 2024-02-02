@@ -10,11 +10,9 @@ The paper is available at the following [link](https://drive.google.com/file/d/1
 
 In this study, We tried the new dialog summarization model bart-large-cnn, which is a bart model fine-tuned on the CNN/Daily Mail dataset, CNN/Daily Mail which is a commonly used news article summarization dataset. We also attempted data enhancement, which consisted of the following components:
 
-1. **Emojis Analysis::** We investigate the importance of emojis in dialogues and chat-like conversations. Emojis are explored as a rich source of information that can contribute to the generation of summaries with increased accuracy and contextual relevance.
+1. **Emojis Replacement:** Translate some emojis into words, where the words are the emotions that the emoji is supposed to express.
 
-2. **Keywords Extraction:** We explore the impact of injecting keywords into the summarization process. Our findings highlight the beneficial role of keywords in improving the quality of dialogue summaries.
-
-3. **Slang Preprocessing:** We introduce a preprocessing technique to effectively handle slang in conversations. This addition aims to enhance the comprehensibility of generated summaries in the context of informal language use.
+2. **Random Word Deletion:** Apply random deletion to all words (except names) with the same probability.
 
 The results obtained from our framework show promising outcomes, indicating the potential for improved abstractive chat summarization. We believe that our contributions provide a valuable foundation for future research endeavors in this field.
 
