@@ -2,18 +2,13 @@
 
 ## Overview
 
-| Model                     | Metric     | Samsum                       | Dialogsum                     |
-|---------------------------|------------|------------------------------|-------------------------------|
-|                           | BERT-Score | 0.6603 (bart-large-cnn)      | 0.6524 (bart-large-cnn)       |
-| bart-large-cnn            | ROUGE-1    | 40.09                        | 36.24                         |
-|                           | ROUGE-2    | 19.96                        | 15.59                         |
-|                           | ROUGE-L    | 30.82                        | 27.99                         |
-|                           | ROUGE-Lsum | 36.98                        | 31.49                         |
-|                           | BERT-Score | *待填写* (bart-large-xsum)   | *待填写* (bart-large-xsum)    |
-| bart-large-xsum (对比)    | ROUGE-1    | *待填写*                     | *待填写*                      |
-|                           | ROUGE-2    | *待填写*                     | *待填写*                      |
-|                           | ROUGE-L    | *待填写*                     | *待填写*                      |
-|                           | ROUGE-Lsum | *待填写*                     | *待填写*                      |
+| Model                     | Dataset   | BERT-Score | ROUGE-1 | ROUGE-2 | ROUGE-L | ROUGE-Lsum |
+|---------------------------|-----------|------------|---------|---------|---------|------------|
+| bart-large-cnn (Samsum)   | Samsum    | 0.6603     | 40.09   | 19.96   | 30.82   | 36.98      |
+| bart-large-cnn (Dialogsum)| Dialogsum | 0.6524     | 36.24   | 15.59   | 27.99   | 31.49      |
+| bart-large-xsum (Samsum)  | Samsum    | *待填写*   | *待填写* | *待填写* | *待填写* | *待填写*    |
+| bart-large-xsum (Dialogsum)| Dialogsum | *待填写*   | *待填写* | *待填写* | *待填写* | *待填写*    |
+
 
 
 This repository features our inventive approach to abstractive chat summarization, titled "Leveraging Emojis, Keywords, and Slang for Enhanced Abstractive Chat Summarization." While deriving insights from prior research in the field, we have developed our own implementation to improve existing techniques. Our enhancements include integrating emojis, keywords, and handling of slang, all aimed at enhancing the overall quality of generated summaries.
