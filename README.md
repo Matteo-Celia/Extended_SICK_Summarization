@@ -2,6 +2,12 @@
 
 ## Overview
 
+| Model                     | SAMSum                          | DialogSum                       |
+|---------------------------|---------------------------------|---------------------------------|
+|                           | R-1   | R-2   | R-L   | B-S       | R-1   | R-2   | R-L   | B-S       |
+|---------------------------|-------|-------|-------|-----------|-------|-------|-------|-----------|
+| bart-large-cnn            | 40.09 | 19.96 | 30.82 | 0.6603    | 36.24 | 15.59 | 27.99 | 0.6524    |
+| bart-large-xsum (对比)    | 待填写 | 待填写 | 待填写 | 待填写    | 待填写 | 待填写 | 待填写 | 待填写    |
 
 
 This repository features our inventive approach to abstractive chat summarization, titled "Leveraging Emojis, Keywords, and Slang for Enhanced Abstractive Chat Summarization." While deriving insights from prior research in the field, we have developed our own implementation to improve existing techniques. Our enhancements include integrating emojis, keywords, and handling of slang, all aimed at enhancing the overall quality of generated summaries.
