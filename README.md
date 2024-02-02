@@ -8,7 +8,7 @@ The paper is available at the following [link](https://drive.google.com/file/d/1
 
 ## Abstract
 
-In this study, We tried the new dialog summarization model bart-large-cnn, which is a bart model fine-tuned on the CNN/Daily Mail dataset, CNN/Daily Mail which is a commonly used news article summarization dataset. We also tried data augmentation, including the following components:
+In this study, We tried the new dialog summarization model bart-large-cnn, which is a bart model fine-tuned on the CNN/Daily Mail dataset. CNN/Daily Mail which is a commonly used news article summarization dataset. We also tried data augmentation, including the following components:
 
 1. **Emojis Replacement:** Translate some emojis into words, where the words are the emotions that the emoji is supposed to express.
 
