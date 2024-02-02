@@ -2,22 +2,13 @@
 
 ## Overview
 
-| Model                     | Dataset   | BERT-Score | ROUGE-1 | ROUGE-2 | ROUGE-L | ROUGE-Lsum |
-|---------------------------|-----------|------------|---------|---------|---------|------------|
-| bart-large-cnn (Samsum)   | Samsum    | 0.6603     | 40.09   | 19.96   | 30.82   | 36.98      |
-| bart-large-cnn (Dialogsum)| Dialogsum | 0.6524     | 36.24   | 15.59   | 27.99   | 31.49      |
-| bart-large-xsum (Samsum)  | Samsum    | *待填写*   | *待填写* | *待填写* | *待填写* | *待填写*    |
-| bart-large-xsum (Dialogsum)| Dialogsum | *待填写*   | *待填写* | *待填写* | *待填写* | *待填写*    |
-
-
-
 This repository features our inventive approach to abstractive chat summarization, titled "Leveraging Emojis, Keywords, and Slang for Enhanced Abstractive Chat Summarization." While deriving insights from prior research in the field, we have developed our own implementation to improve existing techniques. Our enhancements include integrating emojis, keywords, and handling of slang, all aimed at enhancing the overall quality of generated summaries.
 
 The paper is available at the following [link](https://drive.google.com/file/d/1KXCmFDLEX84-FqeNv30Ni0ddpyhPUhuj/view?usp=sharing).
 
 ## Abstract
 
-In this study, we present innovative enhancements to the abstractive chat summarization task. Our approach extends previous research that emphasized the advantages of injecting commonsense knowledge into dialogue summarization. The primary focus of our extensions includes:
+In this study, We tried the new dialog summarization model bart-large-cnn, which is a bart model fine-tuned on the CNN/Daily Mail dataset, CNN/Daily Mail which is a commonly used news article summarization dataset. We also attempted data enhancement, which consisted of the following components:
 
 1. **Emojis Analysis::** We investigate the importance of emojis in dialogues and chat-like conversations. Emojis are explored as a rich source of information that can contribute to the generation of summaries with increased accuracy and contextual relevance.
 
