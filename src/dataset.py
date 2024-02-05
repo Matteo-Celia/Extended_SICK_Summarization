@@ -7,14 +7,13 @@ from datasets import load_dataset
 import os
 import spacy
 import random
+from random import choice
 import nltk
 nltk.download('wordnet')
 nltk.download('punkt')
 from nltk.corpus import wordnet
-from random import choice, random
 import re
 import string
-punc = string.punctuation
 
 
 
@@ -166,7 +165,7 @@ class SamsumDataset(Dataset):
     
                 for word in words[1:]:  # 从第二个单词开始处理
                     # 对于非 <I> 标签内的文本，随机决定是否保留单词，保留概率为70%
-                    if random() > self.p or word in punc:
+                    if random.random() > self.p or word in punc:
                         new_words.append(word)
     
                 reconstructed_part = " ".join(new_words)
