@@ -144,58 +144,45 @@ class SamsumDataset(Dataset):
 
     def replace(self, sentence):
         contractions = {":)": " smile ", ":-)": " happy ", ":/": " unsure ", ":(": "sad",  "-_-": " unimpressed ", "<3": " love ", ":D": " happy ",
-                        " can't ": " cannot ", " don't ": " do not ", " won't ": " will not ", " haven't ": " have not ", " doesn't ": " does not ", " isn't ": " is not ", " aren't ": " are not ",
-                        " couldn't ": " could not ", "'ll": " will", "'m": " am", "'re": " are", "'ve": " have", " wasn’t ": " was not ",
-                       " U ": " you ", " u ": " you ", " ur ": " your ", "<file_photo>": "send a photo", "<file_video>": "send a video", " sth ": " something ",
+                       " U ": " you ", " u ": " you ", " ur ": " your ",
                        "😊": " happy ", "👍": " great ", "🙀": " amazing ", "😍": " deeply in love ", "❤️": " love ", "😉": " mischievous ", "😜": " playful ", 
-                       "😩": " upset ", "😘 ": " showing affection ", "🤣": " extreme amusement ", "😏": " slyly suggestive ", "😃": " joyful ", "😁": " excited ",
+                       "😩": " upset ", "😘": " showing affection ", "🤣": " extreme amusement ", "😏": " slyly suggestive ", "😃": " joyful ", "😁": " excited ",
                        "😓": " disagree ", "🙈": " shy ", "😰": " anxious ", "😂": " extreme amusement ", "🤤": " ravenous "}
         for contraction, full_form in contractions.items():
             sentence = sentence.replace(contraction, full_form)
         return sentence
 
-    def enhance_dialogue(self, sentence): 
-        parts = sentence.split('\r\n')
+    def enhance_dialogue(self, sentence):
+        parts = sentence.split('\n')
         new_parts = []
-        
+        punc = string.punctuation  # 获取所有标点符号
+    
         for part in parts:
-            words = nltk.word_tokenize(part)
-            new_words = []
-            
-            new_words.append(words[0])
-            
-            for word in words[1:]:
-                if word in punc:
-                    new_words.append(word)
-                elif random() > self.p:
-                    new_words.append(word)
-            
-            reconstructed_part = ' '.join(new_words)
-            for punct in [',', '.', '?', '!', '-', ')', "'", ':']:
-                reconstructed_part = reconstructed_part.replace(' ' + punct, punct)
-            new_parts.append(reconstructed_part)
-        
-        reconstructed_sentence = '\r\n'.join(new_parts)
+            if part.strip().startswith('<I>') and part.strip().endswith('</I>'):
+                new_parts.append(part)  # 直接添加，不做更改
+            else:
+                words = part.split()  # 使用简单的空格分割而不是 nltk.word_tokenize
+                new_words = [words[0]] if words else []  # 假设第一个单词是人名并保留
+    
+                for word in words[1:]:  # 从第二个单词开始处理
+                    # 对于非 <I> 标签内的文本，随机决定是否保留单词，保留概率为70%
+                    if random() > self.p or word in punc:
+                        new_words.append(word)
+    
+                reconstructed_part = " ".join(new_words)
+                new_parts.append(reconstructed_part)
+    
+        reconstructed_sentence = '\n'.join(new_parts)
         return reconstructed_sentence
 
     def __getitem__(self, index):
         if self.extra_context==False:
-            dialogue = self.dialogue[index]
-            replaced_dialogue = self.replace(dialogue)
-            if self.split_type == "train" and self.use_enhance == True:
-                #(1, sequence_length)
-                enhanced_dialogue = self.enhance_dialogue(replaced_dialogue)
-                encoded_dialogue = self.tokenizer(enhanced_dialogue, 
-                                              padding='max_length', 
-                                              truncation=True, 
-                                              max_length=self.encoder_max_len, 
-                                              return_tensors='pt')
-            else:
-                encoded_dialogue = self.tokenizer(replaced_dialogue, 
-                                                padding='max_length', 
-                                                truncation=True, 
-                                                max_length=self.encoder_max_len, 
-                                                return_tensors='pt')
+            #(1, sequence_length)
+            encoded_dialogue = self.tokenizer(self.dialogue[index], 
+                                            padding='max_length', 
+                                            truncation=True, 
+                                            max_length=self.encoder_max_len, 
+                                            return_tensors='pt')
         else:
             if self.paracomet==False: # plain COMET
                 try:
@@ -251,6 +238,9 @@ class SamsumDataset(Dataset):
 
                         if sentence != commonsense:
                             dialogue += self.process_media_msg(sentence, person, commonsense)
+
+                        if self.split_type == "train" and self.use_enhance == True:
+                            dialogue = self.enhance_dialogue(self.replace(dialogue))
                             
                 except KeyError: # when an error occurred while processing commonsense, just give plain utterance as output
                     print("key error")
@@ -523,61 +513,15 @@ class DialogsumDataset(Dataset):
 
     def __len__(self):
         return self.data_len
-
-    def replace(self, sentence):
-        contractions = {":)": " smile ", ":-)": " happy ", ":/": " unsure ", ":(": "sad",  "-_-": " unimpressed ", "<3": " love ", ":D": " happy ",
-                        " can't ": " cannot ", " don't ": " do not ", " won't ": " will not ", " haven't ": " have not ", " doesn't ": " does not ", " isn't ": " is not ", " aren't ": " are not ",
-                        " couldn't ": " could not ", "'ll": " will", "'m": " am", "'re": " are", "'ve": " have", " wasn’t ": " was not ",
-                       " U ": " you ", " u ": " you ", " ur ": " your ", "<file_photo>": "send a photo", "<file_video>": "send a video", " sth ": " something ",
-                       "😊": " happy ", "👍": " great ", "🙀": " amazing ", "😍": " deeply in love ", "❤️": " love ", "😉": " mischievous ", "😜": " playful ", 
-                       "😩": " upset ", "😘 ": " showing affection ", "🤣": " extreme amusement ", "😏": " slyly suggestive ", "😃": " joyful ", "😁": " excited ",
-                       "😓": " disagree ", "🙈": " shy ", "😰": " anxious ", "😂": " extreme amusement ", "🤤": " ravenous "}
-        for contraction, full_form in contractions.items():
-            sentence = sentence.replace(contraction, full_form)
-        return sentence
-
-    def enhance_dialogue(self, sentence): 
-        parts = sentence.split('\r\n')
-        new_parts = []
         
-        for part in parts:
-            words = nltk.word_tokenize(part)
-            new_words = []
-            
-            new_words.append(words[0])
-            
-            for word in words[1:]:
-                if word in punc:
-                    new_words.append(word)
-                elif random() > self.p:
-                    new_words.append(word)
-            
-            reconstructed_part = ' '.join(new_words)
-            for punct in [',', '.', '?', '!', '-', ')', "'", ':']:
-                reconstructed_part = reconstructed_part.replace(' ' + punct, punct)
-            new_parts.append(reconstructed_part)
-        
-        reconstructed_sentence = '\r\n'.join(new_parts)
-        return reconstructed_sentence
-
     def __getitem__(self, index):
         if self.extra_context==False:
-            dialogue = self.dialogue[index]
-            replaced_dialogue = self.replace(dialogue)
-            if self.split_type == "train" and self.use_enhance == True:
-                #(1, sequence_length)
-                enhanced_dialogue = self.enhance_dialogue(replaced_dialogue)
-                encoded_dialogue = self.tokenizer(enhanced_dialogue, 
-                                              padding='max_length', 
-                                              truncation=True, 
-                                              max_length=self.encoder_max_len, 
-                                              return_tensors='pt')
-            else:
-                encoded_dialogue = self.tokenizer(replaced_dialogue, 
-                                                padding='max_length', 
-                                                truncation=True, 
-                                                max_length=self.encoder_max_len, 
-                                                return_tensors='pt')
+            #(1, sequence_length)
+            encoded_dialogue = self.tokenizer(self.dialogue[index], 
+                                            padding='max_length', 
+                                            truncation=True, 
+                                            max_length=self.encoder_max_len, 
+                                            return_tensors='pt')
         else:
             if self.split_type == "validation":
                 dialog_id = f"dev_{self.id[index]}"
