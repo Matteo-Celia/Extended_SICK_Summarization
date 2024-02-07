@@ -10,3 +10,4 @@ evaluate
 accelerate
 spacy
 tk
+sacremoses
