@@ -9,6 +9,7 @@ import spacy
 import random
 from random import choice
 import nltk
+nltk.download('stopwords')
 nltk.download('wordnet')
 nltk.download('punkt')
 from nltk.corpus import wordnet as wn
