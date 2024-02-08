@@ -11,19 +11,23 @@ from random import choice
 import nltk
 nltk.download('wordnet')
 nltk.download('punkt')
-from nltk.corpus import wordnet
+from nltk.corpus import wordnet as wn
+stop_words = set(nltk.corpus.stopwords.words('english'))
 import re
 import string
-from transformers import pipeline
-translate_to_it = pipeline("translation_en_to_it", model="Helsinki-NLP/opus-mt-en-it", device=0)
-translate_to_en = pipeline("translation_it_to_en", model="Helsinki-NLP/opus-mt-it-en", device=0)
+
+import gensim.downloader as api
+glove_model = api.load('glove-wiki-gigaword-300')
+import random
+import string
+
 
 
 class SamsumDataset(Dataset):
     def __init__(self, encoder_max_len, decoder_max_len, split_type, 
                  tokenizer, extra_context=False, extra_supervision=False, 
                  paracomet=False,relation = "xReason", supervision_relation="xIntent", 
-                 roberta=False, sentence_transformer=False, use_back_translation=False, use_random_deletion=False, p=0.05):
+                 roberta=False, sentence_transformer=False, use_random_replacement=False, use_random_deletion=False, p=0.05):
         self.encoder_max_len = encoder_max_len
         self.decoder_max_len = decoder_max_len
         self.split_type = split_type
@@ -52,7 +56,7 @@ class SamsumDataset(Dataset):
         self.id = self.data['id']
 
         self.nlp = spacy.load('en_core_web_sm')
-        self.use_back_translation = use_back_translation
+        self.use_random_replacement = use_random_replacement
         self.use_random_deletion = use_random_deletion
         self.p = p
 
@@ -156,29 +160,30 @@ class SamsumDataset(Dataset):
         return sentence
 
     
-    def back_translation(self, sentence):
-        parts = sentence.split('\n')  
+    def random_replacement(self, sentence):
+        parts = sentence.split('\n')
         new_parts = []
-        i = 0
-        while i < len(parts):
-            part = parts[i].strip()
-            if part.startswith('<I>'):  
-                i += 1  
-                continue
-            if part:  
-                translated_to_it = translate_to_it(part)[0]['translation_text']
-                translated_back_to_en = translate_to_en(translated_to_it)[0]['translation_text']
+        punc = string.punctuation
     
-                if translated_back_to_en.strip('"') != part.strip('"'):
-                    new_parts.append(part)  
-                    if i + 1 < len(parts) and parts[i + 1].strip().startswith('<I>'):
-                        new_parts.append(parts[i + 1]) 
-                    new_parts.append(translated_back_to_en)  
-                    if i + 1 < len(parts) and parts[i + 1].strip().startswith('<I>'):
-                        new_parts.append(parts[i + 1])  
-                        i += 1  
-            i += 1
-            
+        for part in parts:
+            if part.strip().startswith('<I>') and part.strip().endswith('</I>'):
+                new_parts.append(part)
+            else:
+                words = part.split()
+                new_words = [words[0]] if words else []
+                for word in words[1:]:
+                    if word.lower() not in stop_words and word not in punc and random.random() <= self.p:
+                        try:
+                            synonyms = glove_model.most_similar(word, topn=1)
+                            synonym = synonyms[0][0] 
+                            new_words.append(synonym)
+                            continue
+                        except KeyError:
+                            pass
+                    new_words.append(word)
+                reconstructed_part = " ".join(new_words)
+                new_parts.append(reconstructed_part)
+    
         reconstructed_sentence = '\n'.join(new_parts)
         return reconstructed_sentence
 
@@ -272,10 +277,10 @@ class SamsumDataset(Dataset):
                             dialogue += self.process_media_msg(sentence, person, commonsense)
 
                         if self.split_type == "train":
-                            if self.use_back_translation == True and self.use_random_deletion == True:
+                            if self.use_random_replacement == True and self.use_random_deletion == True:
                                 raise ValueError("Back Translation and Random Deletion can't use together!")
-                            elif self.use_back_translation == True:
-                                dialogue = self.back_translation(self.replace(dialogue))
+                            elif self.use_random_replacement == True:
+                                dialogue = self.random_replacement(self.replace(dialogue))
                             elif self.use_random_deletion == True:
                                 dialogue = self.random_deletion(self.replace(dialogue))
                             
@@ -386,10 +391,10 @@ class SamsumDataset_total:
     def __init__(self, encoder_max_len, decoder_max_len, tokenizer, 
                  extra_context=False, extra_supervision=False, paracomet=False,
                  relation="xReason", supervision_relation='isAfter',
-                 roberta=False, sentence_transformer=False, use_back_translation=False, use_random_deletion=False, p=0.05):
-        self.train_dataset = SamsumDataset(encoder_max_len, decoder_max_len, 'train',tokenizer,extra_context=extra_context,extra_supervision=extra_supervision,paracomet=paracomet,relation=relation, supervision_relation=supervision_relation, roberta=roberta, sentence_transformer=sentence_transformer, use_back_translation=use_back_translation, use_random_deletion=use_random_deletion, p=p)
-        self.eval_dataset = SamsumDataset(encoder_max_len, decoder_max_len, 'validation', tokenizer,extra_context=extra_context,extra_supervision=extra_supervision,paracomet=paracomet,relation=relation, supervision_relation=supervision_relation, roberta=roberta, sentence_transformer=sentence_transformer, use_back_translation=use_back_translation, use_random_deletion=use_random_deletion, p=p)
-        self.test_dataset = SamsumDataset(encoder_max_len, decoder_max_len, 'test', tokenizer,extra_context=extra_context,extra_supervision=extra_supervision,paracomet=paracomet,relation=relation, supervision_relation=supervision_relation, roberta=roberta, sentence_transformer=sentence_transformer, use_back_translation=use_back_translation, use_random_deletion=use_random_deletion, p=p)
+                 roberta=False, sentence_transformer=False, use_random_replacement=False, use_random_deletion=False, p=0.05):
+        self.train_dataset = SamsumDataset(encoder_max_len, decoder_max_len, 'train',tokenizer,extra_context=extra_context,extra_supervision=extra_supervision,paracomet=paracomet,relation=relation, supervision_relation=supervision_relation, roberta=roberta, sentence_transformer=sentence_transformer, use_random_replacement=use_random_replacement, use_random_deletion=use_random_deletion, p=p)
+        self.eval_dataset = SamsumDataset(encoder_max_len, decoder_max_len, 'validation', tokenizer,extra_context=extra_context,extra_supervision=extra_supervision,paracomet=paracomet,relation=relation, supervision_relation=supervision_relation, roberta=roberta, sentence_transformer=sentence_transformer, use_random_replacement=use_random_replacement, use_random_deletion=use_random_deletion, p=p)
+        self.test_dataset = SamsumDataset(encoder_max_len, decoder_max_len, 'test', tokenizer,extra_context=extra_context,extra_supervision=extra_supervision,paracomet=paracomet,relation=relation, supervision_relation=supervision_relation, roberta=roberta, sentence_transformer=sentence_transformer, use_random_replacement=use_random_replacement, use_random_deletion=use_random_deletion, p=p)
     
     def getTrainData(self):
         return self.train_dataset
