@@ -159,14 +159,12 @@ class SamsumDataset(Dataset):
     def back_translation(self, sentence):
         parts = sentence.split('\n')  
         new_parts = []
-    
         i = 0
         while i < len(parts):
             part = parts[i].strip()
             if part.startswith('<I>'):  
                 i += 1  
                 continue
-           
             if part:  
                 translated_to_it = translate_to_it(part)[0]['translation_text']
                 translated_back_to_en = translate_to_en(translated_to_it)[0]['translation_text']
@@ -174,8 +172,7 @@ class SamsumDataset(Dataset):
                 if translated_back_to_en.strip('"') != part.strip('"'):
                     new_parts.append(part)  
                     if i + 1 < len(parts) and parts[i + 1].strip().startswith('<I>'):
-                        new_parts.append(parts[i + 1])  
-    
+                        new_parts.append(parts[i + 1]) 
                     new_parts.append(translated_back_to_en)  
                     if i + 1 < len(parts) and parts[i + 1].strip().startswith('<I>'):
                         new_parts.append(parts[i + 1])  
@@ -439,7 +436,7 @@ def custom_load_dataset(type,split):
 
 
 class DialogsumDataset(Dataset):
-    def __init__(self, encoder_max_len, decoder_max_len, split_type, tokenizer, extra_context=False, extra_supervision=False, paracomet=False, relation="xReason", supervision_relation="isAfter", roberta=False, sentence_transformer=False, use_enhance=False, p=0.05):
+    def __init__(self, encoder_max_len, decoder_max_len, split_type, tokenizer, extra_context=False, extra_supervision=False, paracomet=False, relation="xReason", supervision_relation="isAfter", roberta=False, sentence_transformer=False):
         self.encoder_max_len = encoder_max_len
         self.decoder_max_len = decoder_max_len
         self.split_type = split_type
@@ -453,8 +450,6 @@ class DialogsumDataset(Dataset):
         
         self.roberta=roberta
         self.sentence_transformer = sentence_transformer
-        self.use_enhance = use_enhance
-        self.p=p
 
         if (self.paracomet) and ("<" != self.relation[0]):
             self.relation = f"<|{self.relation}|>"
@@ -815,10 +810,10 @@ class DialogsumDataset_total:
     def __init__(self, encoder_max_len, decoder_max_len, tokenizer, 
                  extra_context=False, extra_supervision=False, paracomet=False, 
                  relation="xReason",roberta=False,supervision_relation='isAfter', 
-                 sentence_transformer=False, use_enhance=False, p=0.05):
-        self.train_dataset = DialogsumDataset(encoder_max_len, decoder_max_len, 'train',tokenizer,extra_context,extra_supervision,paracomet=paracomet,relation=relation,roberta=roberta,supervision_relation=supervision_relation, sentence_transformer=sentence_transformer, use_enhance=use_enhance, p=p)
-        self.eval_dataset = DialogsumDataset(encoder_max_len, decoder_max_len, 'validation', tokenizer,extra_context,extra_supervision,paracomet=paracomet,relation=relation,roberta=roberta,supervision_relation=supervision_relation, sentence_transformer=sentence_transformer, use_enhance=use_enhance, p=p)
-        self.test_dataset = DialogsumDataset(encoder_max_len, decoder_max_len, 'test', tokenizer,extra_context,extra_supervision,paracomet=paracomet,relation=relation,roberta=roberta,supervision_relation=supervision_relation, sentence_transformer=sentence_transformer, use_enhance=use_enhance, p=p)
+                 sentence_transformer=False):
+        self.train_dataset = DialogsumDataset(encoder_max_len, decoder_max_len, 'train',tokenizer,extra_context,extra_supervision,paracomet=paracomet,relation=relation,roberta=roberta,supervision_relation=supervision_relation, sentence_transformer=sentence_transformer)
+        self.eval_dataset = DialogsumDataset(encoder_max_len, decoder_max_len, 'validation', tokenizer,extra_context,extra_supervision,paracomet=paracomet,relation=relation,roberta=roberta,supervision_relation=supervision_relation, sentence_transformer=sentence_transformer)
+        self.test_dataset = DialogsumDataset(encoder_max_len, decoder_max_len, 'test', tokenizer,extra_context,extra_supervision,paracomet=paracomet,relation=relation,roberta=roberta,supervision_relation=supervision_relation, sentence_transformer=sentence_transformer)
         print(self.train_dataset.data_len)
     def getTrainData(self):
         return self.train_dataset
