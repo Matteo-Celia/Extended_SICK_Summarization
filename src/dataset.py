@@ -275,13 +275,12 @@ class SamsumDataset(Dataset):
                         if sentence != commonsense:
                             dialogue += self.process_media_msg(sentence, person, commonsense)
 
-                        if self.split_type == "train":
-                            if self.use_random_replacement == True and self.use_random_deletion == True:
-                                raise ValueError("Back Translation and Random Deletion can't use together!")
-                            elif self.use_random_replacement == True:
-                                dialogue = self.random_replacement(self.replace(dialogue))
-                            elif self.use_random_deletion == True:
-                                dialogue = self.random_deletion(self.replace(dialogue))
+                        if self.use_random_replacement == True and self.use_random_deletion == True:
+                            raise ValueError("Back Translation and Random Deletion can't use together!")
+                        elif self.use_random_replacement == True:
+                            dialogue = self.random_replacement(self.replace(dialogue))
+                        elif self.use_random_deletion == True:
+                            dialogue = self.random_deletion(self.replace(dialogue))
                             
                 except KeyError: # when an error occurred while processing commonsense, just give plain utterance as output
                     print("key error")
