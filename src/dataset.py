@@ -23,7 +23,7 @@ class SamsumDataset(Dataset):
     def __init__(self, encoder_max_len, decoder_max_len, split_type, 
                  tokenizer, extra_context=False, extra_supervision=False, 
                  paracomet=False,relation = "xReason", supervision_relation="xIntent", 
-                 roberta=False, sentence_transformer=False, use_random_replacement=False, use_random_deletion=False, p=0.05):
+                 roberta=False, sentence_transformer=False, use_blank_nosing=False, use_random_replacement=False, use_random_deletion=False, p=0.1):
         self.encoder_max_len = encoder_max_len
         self.decoder_max_len = decoder_max_len
         self.split_type = split_type
@@ -52,6 +52,7 @@ class SamsumDataset(Dataset):
         self.id = self.data['id']
 
         self.nlp = spacy.load('en_core_web_sm')
+        self.use_blank_nosing = use_blank_nosing
         self.use_random_replacement = use_random_replacement
         self.use_random_deletion = use_random_deletion
         self.p = p
@@ -154,6 +155,32 @@ class SamsumDataset(Dataset):
         for contraction, full_form in contractions.items():
             sentence = sentence.replace(contraction, full_form)
         return sentence
+        
+
+    def blank_nosing(self, sentence):
+        stop_words = set(stopwords.words('english'))  # 获取英文停用词
+        parts = sentence.split('\n')
+        new_parts = []
+        punc = string.punctuation  # 获取所有标点符号
+
+        for part in parts:
+            if part.strip().startswith('<I>') and part.strip().endswith('</I>'):
+                new_parts.append(part)  # 直接添加，不做更改
+            else:
+                words = part.split()  # 使用简单的空格分割
+                new_words = [words[0]] if words else []  # 假设第一个单词是人名并保留
+
+                for word in words[1:]:  # 从第二个单词开始处理
+                    if word.lower() not in stop_words and word not in punc and random.random() < self.p:
+                        new_words.append("_")
+                    else:
+                        new_words.append(word)
+
+                reconstructed_part = " ".join(new_words)
+                new_parts.append(reconstructed_part)
+
+        reconstructed_sentence = '\n'.join(new_parts)
+        return reconstructed_sentence
 
     
     def random_replacement(self, sentence):
@@ -389,10 +416,10 @@ class SamsumDataset_total:
     def __init__(self, encoder_max_len, decoder_max_len, tokenizer, 
                  extra_context=False, extra_supervision=False, paracomet=False,
                  relation="xReason", supervision_relation='isAfter',
-                 roberta=False, sentence_transformer=False, use_random_replacement=False, use_random_deletion=False, p=0.05):
-        self.train_dataset = SamsumDataset(encoder_max_len, decoder_max_len, 'train',tokenizer,extra_context=extra_context,extra_supervision=extra_supervision,paracomet=paracomet,relation=relation, supervision_relation=supervision_relation, roberta=roberta, sentence_transformer=sentence_transformer, use_random_replacement=use_random_replacement, use_random_deletion=use_random_deletion, p=p)
-        self.eval_dataset = SamsumDataset(encoder_max_len, decoder_max_len, 'validation', tokenizer,extra_context=extra_context,extra_supervision=extra_supervision,paracomet=paracomet,relation=relation, supervision_relation=supervision_relation, roberta=roberta, sentence_transformer=sentence_transformer, use_random_replacement=use_random_replacement, use_random_deletion=use_random_deletion, p=p)
-        self.test_dataset = SamsumDataset(encoder_max_len, decoder_max_len, 'test', tokenizer,extra_context=extra_context,extra_supervision=extra_supervision,paracomet=paracomet,relation=relation, supervision_relation=supervision_relation, roberta=roberta, sentence_transformer=sentence_transformer, use_random_replacement=use_random_replacement, use_random_deletion=use_random_deletion, p=p)
+                 roberta=False, sentence_transformer=False, use_blank_nosing=False, use_random_replacement=False, use_random_deletion=False, p=0.1):
+        self.train_dataset = SamsumDataset(encoder_max_len, decoder_max_len, 'train',tokenizer,extra_context=extra_context,extra_supervision=extra_supervision,paracomet=paracomet,relation=relation, supervision_relation=supervision_relation, roberta=roberta, sentence_transformer=sentence_transformer, use_blank_nosing=use_blank_nosing, use_random_replacement=use_random_replacement, use_random_deletion=use_random_deletion, p=p)
+        self.eval_dataset = SamsumDataset(encoder_max_len, decoder_max_len, 'validation', tokenizer,extra_context=extra_context,extra_supervision=extra_supervision,paracomet=paracomet,relation=relation, supervision_relation=supervision_relation, roberta=roberta, sentence_transformer=sentence_transformer, use_blank_nosing=use_blank_nosing, use_random_replacement=use_random_replacement, use_random_deletion=use_random_deletion, p=p)
+        self.test_dataset = SamsumDataset(encoder_max_len, decoder_max_len, 'test', tokenizer,extra_context=extra_context,extra_supervision=extra_supervision,paracomet=paracomet,relation=relation, supervision_relation=supervision_relation, roberta=roberta, sentence_transformer=sentence_transformer, use_blank_nosing=use_blank_nosing, use_random_replacement=use_random_replacement, use_random_deletion=use_random_deletion, p=p)
     
     def getTrainData(self):
         return self.train_dataset
