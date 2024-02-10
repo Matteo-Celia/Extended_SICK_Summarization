@@ -202,7 +202,7 @@ class SamsumDataset(Dataset):
                         if synonyms:
                             lemmas = [lemma.name() for lemma in synonyms[0].lemmas()]
                             if lemmas:
-                                new_word = random.choice(lemmas)
+                                new_word = lemmas[0]
                                 new_words.append(new_word)
                                 continue
                     new_words.append(word)
