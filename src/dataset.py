@@ -302,8 +302,16 @@ class SamsumDataset(Dataset):
                         if sentence != commonsense:
                             dialogue += self.process_media_msg(sentence, person, commonsense)
 
-                        if self.use_random_replacement == True and self.use_random_deletion == True:
-                            raise ValueError("Back Translation and Random Deletion can't use together!")
+                        if self.use_random_replacement == True and self.use_random_deletion == True and self.use_blank_nosing == True:
+                            raise ValueError("Data enhancement can't use together!")
+                        elif self.use_random_replacement == True and self.use_random_deletion:
+                            raise ValueError("Data enhancement can't use together!")
+                        elif self.use_random_deletion == True and self.use_blank_nosing == True:
+                            raise ValueError("Data enhancement can't use together!")
+                        elif self.use_random_replacement == True and self.use_blank_nosing == True:
+                            raise ValueError("Data enhancement can't use together!")
+                        elif self.use_blank_nosing == True:
+                            dialogue = self.blank_nosing(self.replace(dialogue))
                         elif self.use_random_replacement == True:
                             dialogue = self.random_replacement(self.replace(dialogue))
                         elif self.use_random_deletion == True:
