@@ -146,11 +146,10 @@ class SamsumDataset(Dataset):
 
     
     def replace(self, sentence):
-        contractions = {":)": " smile ", ":-)": " happy ", ":/": " unsure ", ":(": "sad",  "-_-": " unimpressed ", "<3": " love ", ":D": " happy ",
-                       " U ": " you ", " u ": " you ", " ur ": " your ",
-                       "😊": " happy ", "👍": " great ", "🙀": " amazing ", "😍": " deeply in love ", "❤️": " love ", "😉": " mischievous ", "😜": " playful ", 
-                       "😩": " upset ", "😘": " showing affection ", "🤣": " extreme amusement ", "😏": " slyly suggestive ", "😃": " joyful ", "😁": " excited ",
-                       "😓": " disagree ", "🙈": " shy ", "😰": " anxious ", "😂": " extreme amusement ", "🤤": " ravenous "}
+        contractions = {":)": "", ":-)": "", ":/": "", ":(": "",  "-_-": "", "<3": "", ":D": "", " U ": " you ", " u ": " you ", " ur ": " your ",
+                       "😊": "", "👍": "", "🙀": "", "😍": "", "❤️": "", "😉": "", "😜": "", 
+                       "😩": "", "😘": "", "🤣": "", "😏": "", "😃": "", "😁": "",
+                       "😓": "", "🙈": "", "😰": "", "😂": "", "🤤": ""}
         for contraction, full_form in contractions.items():
             sentence = sentence.replace(contraction, full_form)
         return sentence
