@@ -66,7 +66,7 @@ To process the commonsense data [PARACOMET](https://github.com/skgabriel/paracom
 To train the original SICK model execute the following command: 
 
 ```
-!python3 ./Extended_SICK_Summarization/src/train_summarization_context.py --finetune_weight_path="./new_weights_sick_samsum" --best_finetune_weight_path="./new_weights_sick_best_samsum" --dataset_name="samsum" --use_paracomet=True --model_name="facebook/bart-large-xsum" --relation "xIntent" --epoch=1 --use_sentence_transformer True --use_random_replacement True --p 0.01
+!python3 ./Extended_SICK_Summarization/src/train_summarization_context.py --finetune_weight_path="./new_weights_sick_samsum" --best_finetune_weight_path="./new_weights_sick_best_samsum" --dataset_name="samsum" --use_paracomet=True --model_name="facebook/bart-large-xsum" --relation "xIntent" --epoch=1 --use_sentence_transformer True
 ```
 
 In order to include our extensions please add the following parameters (singularly or as in supported combinations below):  
