@@ -66,13 +66,13 @@ To process the commonsense data [PARACOMET](https://github.com/skgabriel/paracom
 To train the original SICK model execute the following command: 
 
 ```
-!python3 ./Enhanced-Abstractive-Chat-Summarization/src/train_summarization_context.py --finetune_weight_path="./new_weights_sick" --best_finetune_weight_path="./new_weights_sick_best" --dataset_name="samsum" --use_paracomet=True --model_name="facebook/bart-large-xsum" --relation "xIntent" --epoch=1 --use_sentence_transformer True
+!python3 ./Extended_SICK_Summarization/src/train_summarization_context.py --finetune_weight_path="./new_weights_sick_samsum" --best_finetune_weight_path="./new_weights_sick_best_samsum" --dataset_name="samsum" --use_paracomet=True --model_name="facebook/bart-large-xsum" --relation "xIntent" --epoch=1 --use_sentence_transformer True --use_random_replacement True --p 0.01
 ```
 
 In order to include our extensions please add the following parameters (singularly or as in supported combinations below):  
 
-- emoji_m0 : If True emojis in the dataset are replaced with their aliases.
-- emoji_m1 : If True it replaces emojis in the dataset with custom tokens containing their most similar words based on a W2V model which was trained on a twitter dataset and finetuned on Samsum dataset.
+- use_remove_emoticons : If True emoticons in the dataset will be removed.
+- use_random_replacement : If True it 
 - keyword : If True KeyBert is used to build and add to the dataset new custom tokens containing the keywords it is capable to retrieve from each utterance. 
 - slang : If True the model is trained on a dataset in which slang expressions and abbreviations are replaced with their corresponding actual meaning.
 
