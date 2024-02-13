@@ -69,12 +69,13 @@ To train the original SICK model execute the following command:
 !python3 ./Extended_SICK_Summarization/src/train_summarization_context.py --finetune_weight_path="./new_weights_sick_samsum" --best_finetune_weight_path="./new_weights_sick_best_samsum" --dataset_name="samsum" --use_paracomet=True --model_name="facebook/bart-large-xsum" --relation "xIntent" --epoch=1 --use_sentence_transformer True
 ```
 
-In order to include our extensions please add the following parameters (singularly or as in supported combinations below):  
+In order to include our extensions please add the following parameters (singularly or as in supported combinations below):
 
-- use_remove_emoticons : If True emoticons in the dataset will be removed.
-- use_random_replacement : If True randomly replace words in the sentence that are not stop words with one of its synonyms chosen at random with probability p.
-- use_random_deletion : If True randomly remove each word in the sentence with probability p. 
-- p : The probability of random replacement or random deletion.
+- model_name: Specify either "facebook/bart-large-xsum" or "facebook/bart-large-cnn" 
+- use_remove_emoticons: If True emoticons in the dataset will be removed.
+- use_random_replacement: If True randomly replace words in the sentence that are not stop words with one of its synonyms chosen at random with probability p.
+- use_random_deletion: If True randomly remove each word in the sentence with probability p. 
+- p: The probability of random replacement or random deletion.
 
 *Note*: our implementations only work with Samsum dataset, random_replacement and random_deletion cannot use together.
 
