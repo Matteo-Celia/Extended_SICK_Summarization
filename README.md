@@ -84,4 +84,3 @@ Obtain inferences executing the next command:
 ```
 !python3 ./Extended_SICK_Summarization/src/inference.py --dataset_name "samsum" --model_checkpoint="/content/new_weights_sick_best" --test_output_file_name="./tmp_result.txt" --use_paracomet True --num_beams 20 --train_configuration="full" --use_sentence_transformer True
 ```
-Make sure to be using the right value for the ```--model_checkpoint``` parameter if you trained the model more than once using different extensions.
