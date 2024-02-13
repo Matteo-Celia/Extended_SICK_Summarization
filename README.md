@@ -72,16 +72,11 @@ To train the original SICK model execute the following command:
 In order to include our extensions please add the following parameters (singularly or as in supported combinations below):  
 
 - use_remove_emoticons : If True emoticons in the dataset will be removed.
-- use_random_replacement : If True it 
-- keyword : If True KeyBert is used to build and add to the dataset new custom tokens containing the keywords it is capable to retrieve from each utterance. 
-- slang : If True the model is trained on a dataset in which slang expressions and abbreviations are replaced with their corresponding actual meaning.
+- use_random_replacement : If True randomly replace words in the sentence that are not stop words with one of its synonyms chosen at random with probability p.
+- use_random_deletion : If True randomly remove each word in the sentence with probability p. 
+- p : The probability of random replacement or random deletion.
 
-As for now, the supported combinations of these parameters are: ```emoji_m1 + slang + keyword```, ```emoji_m1 + keyword```
-
-*Note*: our implementations only work with Samsum dataset.
-
-We suggest to use different values for the ```--finetune_weight_path``` and ```--best_finetune_weight_path``` parameters on different runs to then be able to infer using all the models you trained by using the differently-named checkpoints (to be given as ```--model_checkpoint``` parameter to inference.py) 
-
+*Note*: our implementations only work with Samsum dataset, random_replacement and random_deletion cannot use together.
 
 ## Inference
 Obtain inferences executing the next command:
