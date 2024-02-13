@@ -8,7 +8,7 @@ In this study, We tried the new dialog summarization model bart-large-cnn, which
 
 1. **Emoticons Removemnt:** Remove the emoticons.
 
-2. **Random Word Deletion:** Apply random replacement to all words (except names and stop words) with one of its synonyms with the same probability in order to improve the generalization ability of the model.
+2. **Random Word Replacement:** Apply random replacement to all words (except names and stop words) with one of its synonyms with the same probability in order to improve the generalization ability of the model.
 
 3. **Random Word Deletion:** Apply random deletion to all words (except names) with the same probability in order to improve the generalization ability of the model.
 
