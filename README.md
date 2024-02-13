@@ -1,6 +1,6 @@
 # Extended SICK Summarization
 
-[Colab example:](./facebook_bart_large_xsum.ipynb)
+Colab example: [./facebook_bart_large_xsum.ipynb](./facebook_bart_large_xsum.ipynb)
 
 ## Abstract
 
