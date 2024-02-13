@@ -162,19 +162,19 @@ class SamsumDataset(Dataset):
 
     
     def random_replacement(self, sentence):
-        stop_words = set(stopwords.words('english'))  # 获取英文停用词
+        stop_words = set(stopwords.words('english'))  
         parts = sentence.split('\n')
         new_parts = []
-        punc = string.punctuation  # 获取所有标点符号
+        punc = string.punctuation  
 
         for part in parts:
             if part.strip().startswith('<I>') and part.strip().endswith('</I>'):
-                new_parts.append(part)  # 直接添加，不做更改
+                new_parts.append(part)  
             else:
-                words = part.split()  # 使用简单的空格分割
-                new_words = [words[0]] if words else []  # 假设第一个单词是人名并保留
+                words = part.split()  
+                new_words = [words[0]] if words else []  
 
-                for word in words[1:]:  # 从第二个单词开始处理
+                for word in words[1:]:  
                     if word.lower() not in stop_words and word not in punc and random.random() < self.p:
                         synonyms = wn.synsets(word)
                         if synonyms:
@@ -195,17 +195,16 @@ class SamsumDataset(Dataset):
     def random_deletion(self, sentence):
         parts = sentence.split('\n')
         new_parts = []
-        punc = string.punctuation  # 获取所有标点符号
+        punc = string.punctuation  
     
         for part in parts:
             if part.strip().startswith('<I>') and part.strip().endswith('</I>'):
-                new_parts.append(part)  # 直接添加，不做更改
+                new_parts.append(part)  
             else:
-                words = part.split()  # 使用简单的空格分割而不是 nltk.word_tokenize
-                new_words = [words[0]] if words else []  # 假设第一个单词是人名并保留
+                words = part.split()  
+                new_words = [words[0]] if words else []  
     
-                for word in words[1:]:  # 从第二个单词开始处理
-                    # 对于非 <I> 标签内的文本，随机决定是否保留单词，保留概率为70%
+                for word in words[1:]:
                     if random.random() > self.p or word in punc:
                         new_words.append(word)
     
