@@ -66,7 +66,7 @@ To process the commonsense data [PARACOMET](https://github.com/skgabriel/paracom
 To train the original SICK model execute the following command: 
 
 ```
-!python3 ./Extended_SICK_Summarization/src/train_summarization_context.py --finetune_weight_path="./new_weights_sick_samsum" --best_finetune_weight_path="./new_weights_sick_best_samsum" --dataset_name="samsum" --use_paracomet=True --model_name="facebook/bart-large-xsum" --relation "xIntent" --epoch=1 --use_sentence_transformer True
+!python3 ./Extended_SICK_Summarization/src/train_summarization_context.py --finetune_weight_path="./new_weights_sick" --best_finetune_weight_path="./new_weights_sick_best" --dataset_name="samsum" --use_paracomet=True --model_name="facebook/bart-large-xsum" --relation "xIntent" --epoch=1 --use_sentence_transformer True
 ```
 
 In order to include our extensions please add the following parameters (singularly or as in supported combinations below):
@@ -77,11 +77,11 @@ In order to include our extensions please add the following parameters (singular
 - use_random_deletion: If True randomly remove each word in the sentence with probability p. 
 - p: The probability of random replacement or random deletion.
 
-*Note*: our implementations only work with Samsum dataset, random_replacement and random_deletion cannot use together.
+*Note*: our implementations only work with Samsum dataset and SICK model, random_replacement and random_deletion cannot use together.
 
 ## Inference
 Obtain inferences executing the next command:
 ```
-!python3 /content/Enhanced-Abstractive-Chat-Summarization/src/inference.py --dataset_name "samsum" --model_checkpoint="./new_weights_sick_best" --test_output_file_name="./summaries.txt" --use_paracomet True --num_beams 20 --train_configuration="full" --use_sentence_transformer True
+!python3 ./Extended_SICK_Summarization/src/inference.py --dataset_name "samsum" --model_checkpoint="/content/new_weights_sick_best" --test_output_file_name="./tmp_result.txt" --use_paracomet True --num_beams 20 --train_configuration="full" --use_sentence_transformer True
 ```
 Make sure to be using the right value for the ```--model_checkpoint``` parameter if you trained the model more than once using different extensions.
