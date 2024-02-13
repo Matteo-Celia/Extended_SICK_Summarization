@@ -1,6 +1,7 @@
 # Extended SICK Summarization
 
 ## Overview
+[Open a link to Colab]([https://colab.research.google.com/](https://colab.research.google.com/drive/19JnuHLwjrJXN1wLiIkElNCojIjS-gAd6?usp=sharing)) to see an example using Colab.
 
 ## Abstract
 
