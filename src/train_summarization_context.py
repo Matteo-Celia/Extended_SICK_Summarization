@@ -60,6 +60,7 @@ parser.add_argument('--test_output_file_name',type=str, default='samsum_context_
 parser.add_argument('--relation',type=str,default="xReason")
 parser.add_argument('--supervision_relation',type=str,default='isAfter')
 
+parser.add_argument('--use_remove_emoticons', type=bool, default=False)
 parser.add_argument('--use_random_replacement', type=bool, default=False)
 parser.add_argument('--use_random_deletion', type=bool, default=False)
 parser.add_argument('--p', type=float, default=0.1)
@@ -108,9 +109,7 @@ model_checkpoint_list = [
     "google/t5-large-lm-adapt",
     "google/t5-v1_1-large",
 
-    'microsoft/xprophetnet-large-wiki100-cased',
-    "facebook/bart-large-cnn",
-    "pszemraj/led-large-book-summary"
+    "facebook/bart-large-cnn"
 ]
 tokenizer_list = {
     "facebook/bart-large": "RobertaTokenizer",
@@ -120,9 +119,7 @@ tokenizer_list = {
     "google/t5-large-lm-adapt": "T5Tokenizer",
     "google/t5-v1_1-large": "T5Tokenizer",
     
-    "microsoft/xprophetnet-large-wiki100-cased": "XLMProphetNetTokenizer",
-    "facebook/bart-large-cnn": "RobertaTokenizer",
-    "pszemraj/led-large-book-summary": "LEDTokenizer"
+    "facebook/bart-large-cnn": "RobertaTokenizer"
 }
 max_len_list = {
     "facebook/bart-large": 1024,
@@ -140,9 +137,7 @@ vocab_size_list = {
     "google/t5-large-lm-adapt": 32128,
     "google/t5-v1_1-large": 32128,
 
-    "microsoft/xprophetnet-large-wiki100-cased": 30522,
-    "facebook/bart-large-cnn": 50265,
-    "pszemraj/led-large-book-summary": 50265
+    "facebook/bart-large-cnn": 50265
 }
 dataset_list = [
     "samsum","dialogsum"
@@ -174,7 +169,7 @@ tokenizer.add_special_tokens(special_tokens_dict)
 
 # Set dataset
 if args.dataset_name=='samsum':
-    total_dataset = SamsumDataset_total(args.encoder_max_len,args.decoder_max_len,tokenizer,extra_context=True,paracomet=args.use_paracomet,relation=args.relation,supervision_relation=args.supervision_relation,roberta=args.use_roberta, sentence_transformer=args.use_sentence_transformer, use_random_replacement=args.use_random_replacement, use_random_deletion=args.use_random_deletion, p=args.p)
+    total_dataset = SamsumDataset_total(args.encoder_max_len,args.decoder_max_len,tokenizer,extra_context=True,paracomet=args.use_paracomet,relation=args.relation,supervision_relation=args.supervision_relation,roberta=args.use_roberta, sentence_transformer=args.use_sentence_transformer, use_remove_emoticons=args.use_remove_emoticons, use_random_replacement=args.use_random_replacement, use_random_deletion=args.use_random_deletion, p=args.p)
     train_dataset = total_dataset.getTrainData()
     eval_dataset = total_dataset.getEvalData()
     test_dataset = total_dataset.getTestData()
