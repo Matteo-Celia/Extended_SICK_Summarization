@@ -12,8 +12,6 @@ In this study, We tried the new dialog summarization model bart-large-cnn, which
 
 3. **Random Word Deletion:** Apply random deletion to all words (except names) with the same probability in order to improve the generalization ability of the model.
 
-The results obtained from our framework show promising outcomes, indicating the potential for improved abstractive chat summarization. We believe that our contributions provide a valuable foundation for future research endeavors in this field.
-
 ## Setting
 To utilize our enhanced abstractive chat summarization framework we suggest the use of Google Colab and the execution of the following steps.
 
