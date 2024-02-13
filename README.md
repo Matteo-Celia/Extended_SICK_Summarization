@@ -64,7 +64,7 @@ To process the commonsense data [PARACOMET](https://github.com/skgabriel/paracom
 To train the original SICK model execute the following command: 
 
 ```
-!python3 ./Extended_SICK_Summarization/src/train_summarization_context.py --finetune_weight_path="./new_weights_sick" --best_finetune_weight_path="./new_weights_sick_best" --dataset_name="samsum" --use_paracomet=True --model_name="facebook/bart-large-xsum" --relation "xIntent" --epoch=1 --use_sentence_transformer True
+python3 ./Extended_SICK_Summarization/src/train_summarization_context.py --finetune_weight_path="./new_weights_sick" --best_finetune_weight_path="./new_weights_sick_best" --dataset_name="samsum" --use_paracomet=True --model_name="facebook/bart-large-xsum" --relation "xIntent" --epoch=1 --use_sentence_transformer True
 ```
 
 In order to include our extensions please add the following parameters (singularly or as in supported combinations below):
@@ -80,5 +80,5 @@ In order to include our extensions please add the following parameters (singular
 ## Inference
 Obtain inferences executing the next command:
 ```
-!python3 ./Extended_SICK_Summarization/src/inference.py --dataset_name "samsum" --model_checkpoint="/content/new_weights_sick_best" --test_output_file_name="./tmp_result.txt" --use_paracomet True --num_beams 20 --train_configuration="full" --use_sentence_transformer True
+python3 ./Extended_SICK_Summarization/src/inference.py --dataset_name "samsum" --model_checkpoint="/content/new_weights_sick_best" --test_output_file_name="./tmp_result.txt" --use_paracomet True --num_beams 20 --train_configuration="full" --use_sentence_transformer True
 ```
