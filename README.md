@@ -2,7 +2,7 @@
 
 Colab example: [facebook_bart_large_xsum.ipynb](./facebook_bart_large_xsum.ipynb)
 
-## Abstract
+## Overview
 
 In this study, We tried the new dialog summarization model bart-large-cnn, which is a bart model fine-tuned on the CNN/Daily Mail dataset. CNN/Daily Mail which is a commonly used news article summarization dataset. We also tried data augmentation, including the following components:
 
