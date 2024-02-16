@@ -258,12 +258,12 @@ class SamsumDataset(Dataset):
         
         converted_text = convert_emoji_to_text(translated_text)
         cleaned_ct = converted_text.split("::")
-        print(cleaned_ct)
+        
         cl=[]
         for ct in cleaned_ct :
             cl.append(ct.replace(":",""))
             
-        print(cl)
+        
         final_ct = " ".join(cl)
         final_ct = " ".join(final_ct.split("_"))
 
