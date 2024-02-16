@@ -16,14 +16,14 @@ nltk.download('wordnet')
 nltk.download('omw-1.4')
 import random
 import string
-
+from emoji import convert_emoji_to_text
 
 
 class SamsumDataset(Dataset):
     def __init__(self, encoder_max_len, decoder_max_len, split_type, 
                  tokenizer, extra_context=False, extra_supervision=False, 
                  paracomet=False,relation = "xReason", supervision_relation="xIntent", 
-                 roberta=False, sentence_transformer=False, use_remove_emoticons=False, use_random_replacement=False, use_random_deletion=False, p=0.1):
+                 roberta=False, sentence_transformer=False, use_remove_emoticons=False, use_random_replacement=False, use_random_deletion=False,use_translate_emoticons=False, p=0.1):
         self.encoder_max_len = encoder_max_len
         self.decoder_max_len = decoder_max_len
         self.split_type = split_type
@@ -55,6 +55,11 @@ class SamsumDataset(Dataset):
         self.use_remove_emoticons = use_remove_emoticons
         self.use_random_replacement = use_random_replacement
         self.use_random_deletion = use_random_deletion
+
+        #### translate emoticons
+        self.use_translate_emoticons=use_translate_emoticons
+        ###
+
         self.p = p
 
                       
@@ -231,6 +236,38 @@ class SamsumDataset(Dataset):
         reconstructed_sentence = '\n'.join(new_parts)
         return reconstructed_sentence
 
+    def translate_emoticons(self, sentence):
+        contractions = { 
+            " U ": " you ", " u ": " you ", " ur ": " your ",
+            ":)": "", ":-)": "", ":/": "", ":(": "", "-_-": "", "<3": "", ":D": "",
+            ";)": "", ":P": "", ":-P": "", "XD": "", ":'(": "", ":'-(": "", 
+            ">:(": "", "o.O": "", "O.o": "", ":-/": "", ":-O": "", ":O": "", 
+            ":-D": "", "^_^": "", ">_>": "", "<_<": "", ":3": "", ":|": "", ":-|": "",
+            ":]": "", ":[": "", ";D": "", "=)": "", "=(": "",
+            "=-)": "", "=-(": "", ">:]": "", "</3": "", ";]": "", ";[": "",
+            "D:": "", "D=": "", "D-:": "", ":*": "", ";*": "", "=D": "", "=-D": "",
+            ":>": "", ":<": "", ":^)": "", ":-}": "", ":}": "", ":{": "", ":-{": "",
+            ";-)": "", ";-]": "", "xP": "", "XP": "", "xp": "",
+            "=P": "", ":-b": "", ":b": "", ">:P": "", "O:)": "", "O:-)": "", "0:3": "",
+            "0:-3": "", "0:-)": "", "0:)": "", "0;^)": "", ">:O": "", ":-X": "", ":X": "",
+            ":-#": "", ":#": "", "=-O": "", ":$": "", ":-$": "", "^3^": "",
+            ":-))": "", ":'-)": "", ":')": "", ":-)))": "", ">:D": "", "<:D": ""
+        }
+        for cont, fullform in contractions.items():
+             translated_text = sentence.replace(cont,fullform)
+        
+        converted_text = convert_emoji_to_text(translated_text)
+        cleaned_ct = converted_text.split("::")
+        print(cleaned_ct)
+        cl=[]
+        for ct in cleaned_ct :
+            cl.append(ct.replace(":",""))
+            
+        print(cl)
+        final_ct = " ".join(cl)
+        final_ct = " ".join(final_ct.split("_"))
+
+        return final_ct
     
     def __getitem__(self, index):
         if self.extra_context==False:
@@ -305,6 +342,8 @@ class SamsumDataset(Dataset):
                             dialogue = self.random_replacement(dialogue)
                         elif self.use_random_deletion == True:
                             dialogue = self.random_deletion(dialogue)
+                        elif self.use_translate_emoticons == True:
+                            dialogue = self.translate_emoticons(dialogue)
                             
                 except KeyError: # when an error occurred while processing commonsense, just give plain utterance as output
                     print("key error")
@@ -413,10 +452,10 @@ class SamsumDataset_total:
     def __init__(self, encoder_max_len, decoder_max_len, tokenizer, 
                  extra_context=False, extra_supervision=False, paracomet=False,
                  relation="xReason", supervision_relation='isAfter',
-                 roberta=False, sentence_transformer=False, use_remove_emoticons=False, use_random_replacement=False, use_random_deletion=False, p=0.1):
-        self.train_dataset = SamsumDataset(encoder_max_len, decoder_max_len, 'train',tokenizer,extra_context=extra_context,extra_supervision=extra_supervision,paracomet=paracomet,relation=relation, supervision_relation=supervision_relation, roberta=roberta, sentence_transformer=sentence_transformer, use_remove_emoticons=use_remove_emoticons, use_random_replacement=use_random_replacement, use_random_deletion=use_random_deletion, p=p)
-        self.eval_dataset = SamsumDataset(encoder_max_len, decoder_max_len, 'validation', tokenizer,extra_context=extra_context,extra_supervision=extra_supervision,paracomet=paracomet,relation=relation, supervision_relation=supervision_relation, roberta=roberta, sentence_transformer=sentence_transformer, use_remove_emoticons=use_remove_emoticons, use_random_replacement=use_random_replacement, use_random_deletion=use_random_deletion, p=p)
-        self.test_dataset = SamsumDataset(encoder_max_len, decoder_max_len, 'test', tokenizer,extra_context=extra_context,extra_supervision=extra_supervision,paracomet=paracomet,relation=relation, supervision_relation=supervision_relation, roberta=roberta, sentence_transformer=sentence_transformer, use_remove_emoticons=use_remove_emoticons, use_random_replacement=use_random_replacement, use_random_deletion=use_random_deletion, p=p)
+                 roberta=False, sentence_transformer=False, use_remove_emoticons=False, use_random_replacement=False, use_random_deletion=False,use_translate_emoticons=False, p=0.1):
+        self.train_dataset = SamsumDataset(encoder_max_len, decoder_max_len, 'train',tokenizer,extra_context=extra_context,extra_supervision=extra_supervision,paracomet=paracomet,relation=relation, supervision_relation=supervision_relation, roberta=roberta, sentence_transformer=sentence_transformer, use_remove_emoticons=use_remove_emoticons, use_random_replacement=use_random_replacement, use_random_deletion=use_random_deletion,use_translate_emoticons=use_translate_emoticons, p=p)
+        self.eval_dataset = SamsumDataset(encoder_max_len, decoder_max_len, 'validation', tokenizer,extra_context=extra_context,extra_supervision=extra_supervision,paracomet=paracomet,relation=relation, supervision_relation=supervision_relation, roberta=roberta, sentence_transformer=sentence_transformer, use_remove_emoticons=use_remove_emoticons, use_random_replacement=use_random_replacement, use_random_deletion=use_random_deletion,use_translate_emoticons=use_translate_emoticons, p=p)
+        self.test_dataset = SamsumDataset(encoder_max_len, decoder_max_len, 'test', tokenizer,extra_context=extra_context,extra_supervision=extra_supervision,paracomet=paracomet,relation=relation, supervision_relation=supervision_relation, roberta=roberta, sentence_transformer=sentence_transformer, use_remove_emoticons=use_remove_emoticons, use_random_replacement=use_random_replacement, use_random_deletion=use_random_deletion,use_translate_emoticons=use_translate_emoticons, p=p)
     
     def getTrainData(self):
         return self.train_dataset
