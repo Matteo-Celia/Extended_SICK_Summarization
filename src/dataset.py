@@ -236,6 +236,10 @@ class SamsumDataset(Dataset):
         reconstructed_sentence = '\n'.join(new_parts)
         return reconstructed_sentence
 
+    def convert_emoji_to_text(emoji_text):
+        text_with_aliases = emoji.demojize(emoji_text)
+        return text_with_aliases
+    
     def translate_emoticons(self, sentence):
         contractions = { 
             " U ": " you ", " u ": " you ", " ur ": " your ",
