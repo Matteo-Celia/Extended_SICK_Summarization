@@ -16,7 +16,7 @@ nltk.download('wordnet')
 nltk.download('omw-1.4')
 import random
 import string
-from emoji import convert_emoji_to_text
+import emoji
 
 
 class SamsumDataset(Dataset):
