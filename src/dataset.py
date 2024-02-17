@@ -260,7 +260,7 @@ class SamsumDataset(Dataset):
         for cont, fullform in contractions.items():
              translated_text = sentence.replace(cont,fullform)
         
-        converted_text = convert_emoji_to_text(translated_text)
+        converted_text = emoji.demojize(translated_text)
         cleaned_ct = converted_text.split("::")
         
         cl=[]
